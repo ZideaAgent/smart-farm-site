@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SmartFarm - Sign Up</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-50 flex items-center justify-center min-h-screen">
+    <div class="w-full max-w-md bg-white rounded-lg shadow-lg p-8 space-y-6">
+        <h2 class="text-3xl font-bold text-gray-800 text-center flex items-center justify-center">
+            <i class="fas fa-user-plus text-green-500 mr-3"></i> Register for SmartFarm
+        </h2>
+        
+        <form id="signupForm" class="space-y-4">
+            <div>
+                <label for="name" class="block text-sm font-medium text-gray-700">Full Name</label>
+                <input type="text" id="name" name="name" required
+                    class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-green-500 focus:border-green-500">
+            </div>
+            <div>
+                <label for="email" class="block text-sm font-medium text-gray-700">Email Address</label>
+                <input type="email" id="email" name="email" required
+                    class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-green-500 focus:border-green-500">
+            </div>
+            <div>
+                <label for="password" class="block text-sm font-medium text-gray-700">Password</label>
+                <input type="password" id="password" name="password" required
+                    class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-green-500 focus:border-green-500">
+            </div>
+            
+            <button type="submit" class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
+                <i class="fas fa-user-check mr-2"></i> Register
+            </button>
+        </form>
+
+        <div id="errorMessage" class="hidden bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
+            <span class="block sm:inline"></span>
+        </div>
+
+        <p class="text-center text-sm text-gray-600">
+            Already have an account? <a href="login.html" class="font-medium text-green-600 hover:text-green-500">Log In</a>
+        </p>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.7.1/firebase-app.js";
+        import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/11.7.1/firebase-auth.js";
+        import { getDatabase, ref, set } from "https://www.gstatic.com/firebasejs/11.7.1/firebase-database.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyDL2h9dxXjU-2a6lEwK-iR2AL76FHLGc88",
+            authDomain: "smartfarm-50e9f.firebaseapp.com",
+            databaseURL: "https://smartfarm-50e9f-default-rtdb.firebaseio.com",
+            projectId: "smartfarm-50e9f",
+            storageBucket: "smartfarm-50e9f.firebasestorage.app",
+            messagingSenderId: "615423373084",
+            appId: "1:615423373084:web:e4af0444a7db2f9fa754d9",
+            measurementId: "G-8TDXE1451F"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const database = getDatabase(app);
+
+        const signupForm = document.getElementById('signupForm');
+        const errorMessageDiv = document.getElementById('errorMessage');
+        const errorMessageSpan = errorMessageDiv.querySelector('span');
+
+        signupForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            errorMessageDiv.classList.add('hidden');
+
+            const name = signupForm.name.value;
+            const email = signupForm.email.value;
+            const password = signupForm.password.value;
+
+            try {
+                const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+                const user = userCredential.user;
+
+                // Store user profile in Realtime Database
+                await set(ref(database, 'users/' + user.uid + '/profile'), {
+                    name: name,
+                    email: email,
+                    uid: user.uid
+                });
+
+                alert('Registration successful! You can now log in.');
+                window.location.href = 'login.html'; // Redirect to login page
+            } catch (error) {
+                errorMessageDiv.classList.remove('hidden');
+                switch (error.code) {
+                    case 'auth/email-already-in-use':
+                        errorMessageSpan.textContent = 'This email address is already in use.';
+                        break;
+                    case 'auth/invalid-email':
+                        errorMessageSpan.textContent = 'Please enter a valid email address.';
+                        break;
+                    case 'auth/weak-password':
+                        errorMessageSpan.textContent = 'Password should be at least 6 characters.';
+                        break;
+                    default:
+                        errorMessageSpan.textContent = `Registration failed: ${error.message}`;
+                        break;
+                }
+            }
+        });
+    </script>
+</body>
+</html> 

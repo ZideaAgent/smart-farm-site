@@ -127,7 +127,29 @@
         </div>
     </div>
 
-    <script>
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.7.1/firebase-app.js";
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.7.1/firebase-auth.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyDL2h9dxXjU-2a6lEwK-iR2AL76FHLGc88",
+            authDomain: "smartfarm-50e9f.firebaseapp.com",
+            projectId: "smartfarm-50e9f",
+            storageBucket: "smartfarm-50e9f.firebasestorage.app",
+            messagingSenderId: "615423373084",
+            appId: "1:615423373084:web:e4af0444a7db2f9fa754d9",
+            measurementId: "G-8TDXE1451F"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+
+        onAuthStateChanged(auth, (user) => {
+            if (!user) {
+                window.location.href = 'login.html';
+            }
+        });
+
         // DOM Elements
         const uploadBtn = document.getElementById('uploadBtn');
         const cameraBtn = document.getElementById('cameraBtn');
