@@ -336,32 +336,56 @@
 
         // Function to render pump history
         function renderPumpHistory(historyData) {
-            historyList.innerHTML = '';
+            const historyTable = document.createElement('table');
+            historyTable.className = 'min-w-full bg-white rounded-lg shadow-md overflow-hidden';
+            historyTable.innerHTML = `
+                <thead class="bg-gray-200 text-gray-700 uppercase text-sm leading-normal">
+                    <tr>
+                        <th class="py-3 px-6 text-left">Status</th>
+                        <th class="py-3 px-6 text-left">Start Time</th>
+                        <th class="py-3 px-6 text-left">End Time</th>
+                        <th class="py-3 px-6 text-left">Duration</th>
+                    </tr>
+                </thead>
+                <tbody class="text-gray-600 text-sm font-light">
+                </tbody>
+            `;
+            const tbody = historyTable.querySelector('tbody');
+
             if (historyData) {
                 const sortedHistory = Object.values(historyData).sort((a, b) => b.startTime - a.startTime);
                 sortedHistory.forEach(entry => {
                     const startTime = new Date(entry.startTime).toLocaleString();
                     const endTime = new Date(entry.endTime).toLocaleString();
-                    const historyItem = document.createElement('div');
-                    historyItem.className = 'bg-white p-4 rounded-lg shadow-md mb-4 border border-gray-200';
-                    historyItem.innerHTML = `
-                        <div class="flex items-center justify-between mb-2">
-                            <span class="font-bold text-lg text-gray-800">Pump Activity</span>
+                    const row = document.createElement('tr');
+                    row.className = 'border-b border-gray-200 hover:bg-gray-100';
+                    row.innerHTML = `
+                        <td class="py-3 px-6 text-left whitespace-nowrap">
                             <span class="${entry.status === 'OFF' ? 'bg-red-100 text-red-800' : 'bg-green-100 text-green-800'} text-xs font-medium px-2.5 py-0.5 rounded-full">
                                 ${entry.status}
                             </span>
-                        </div>
-                        <div class="space-y-1">
-                            <p class="text-sm text-gray-700 flex items-center"><i class="fas fa-play-circle mr-2 text-green-500"></i> <strong>Start:</strong> ${startTime}</p>
-                            <p class="text-sm text-gray-700 flex items-center"><i class="fas fa-stop-circle mr-2 text-red-500"></i> <strong>End:</strong> ${endTime}</p>
-                            <p class="text-sm text-gray-700 flex items-center"><i class="fas fa-hourglass-half mr-2 text-blue-500"></i> <strong>Duration:</strong> <span class="font-semibold text-gray-900">${entry.duration} minutes</span></p>
-                        </div>
+                        </td>
+                        <td class="py-3 px-6 text-left flex items-center">
+                            <i class="fas fa-play-circle mr-2 text-green-500"></i> ${startTime}
+                        </td>
+                        <td class="py-3 px-6 text-left flex items-center">
+                            <i class="fas fa-stop-circle mr-2 text-red-500"></i> ${endTime}
+                        </td>
+                        <td class="py-3 px-6 text-left flex items-center">
+                            <i class="fas fa-hourglass-half mr-2 text-blue-500"></i> <span class="font-semibold">${entry.duration} minutes</span>
+                        </td>
                     `;
-                    historyList.appendChild(historyItem);
+                    tbody.appendChild(row);
                 });
             } else {
-                historyList.innerHTML = '<p class="text-gray-600 text-center py-4">No pump activity history available.</p>';
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="4" class="py-4 text-center text-gray-600">No pump activity history available.</td>
+                    </tr>
+                `;
             }
+            historyList.innerHTML = ''; // Clear previous content
+            historyList.appendChild(historyTable);
         }
 
         // Listen for pump history updates
