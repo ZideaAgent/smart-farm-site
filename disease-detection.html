@@ -241,7 +241,7 @@
                 const data = await apiResponse.json();
                 
                 // Display results
-                document.getElementById('primaryPrediction').textContent = data.prediction;
+                document.getElementById('primaryPrediction').textContent = data.predicted_class;
                 document.getElementById('confidenceScore').textContent = 
                     `${(data.confidence * 100).toFixed(1)}%`;
 
