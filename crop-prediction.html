@@ -185,20 +185,7 @@
             };
 
             try {
-                const response = await fetch('https://crop-recommender-h2cnb6bueee4gsh3.uaenorth-01.azurewebsites.net/crop/predict_crop', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(formData)
-                });
-
-                if (!response.ok) {
-                    throw new Error(response.statusText); // Use statusText for basic error message
-                }
-
-                const responseData = await response.json();
-                const data = responseData.predictions; // Access the 'predictions' array
+                const data = await getCropPrediction(formData);
                 
                 // Display results
                 const resultsContainer = document.getElementById('cropResults');
@@ -295,6 +282,29 @@
                 document.getElementById('loadingSpinner').classList.add('hidden');
             }
         });
+
+        async function getCropPrediction(formData) {
+            try {
+                const response = await fetch('https://crop-recommender-h2cnb6bueee4gsh3.uaenorth-01.azurewebsites.net/predict_crop', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(formData)
+                });
+
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.detail || 'Failed to get crop predictions');
+                }
+
+                const data = await response.json();
+                return data.predictions;
+            } catch (error) {
+                console.error('Error:', error);
+                throw error;
+            }
+        }
     </script>
 </body>
 </html> 

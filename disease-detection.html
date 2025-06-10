@@ -246,21 +246,8 @@
                 const response = await fetch(previewImage.src);
                 const blob = await response.blob();
 
-                // Create form data
-                const formData = new FormData();
-                formData.append('file', blob, 'image.jpg');
-
                 // Send to API
-                const apiResponse = await fetch('https://crop-recommender-h2cnb6bueee4gsh3.uaenorth-01.azurewebsites.net/disease/predict', {
-                    method: 'POST',
-                    body: formData
-                });
-
-                if (!apiResponse.ok) {
-                    throw new Error(apiResponse.statusText);
-                }
-
-                const data = await apiResponse.json();
+                const data = await getDiseasePrediction(blob);
                 
                 // Display results
                 document.getElementById('primaryPrediction').textContent = data.predicted_class;
@@ -316,6 +303,29 @@
         function showError(message) {
             errorMessage.classList.remove('hidden');
             errorMessage.querySelector('span').textContent = message;
+        }
+
+        async function getDiseasePrediction(imageFile) {
+            try {
+                const formData = new FormData();
+                formData.append('file', imageFile);
+
+                const response = await fetch('https://plant-disease-eha0cvctgva0fxgu.uaenorth-01.azurewebsites.net/predict', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.detail || 'Failed to get disease prediction');
+                }
+
+                const data = await response.json();
+                return data;
+            } catch (error) {
+                console.error('Error:', error);
+                throw error;
+            }
         }
     </script>
 </body>
