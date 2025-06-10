@@ -245,8 +245,28 @@
 
         onAuthStateChanged(auth, (user) => {
             if (user) {
-                // If user is logged in, redirect to dashboard
-                window.location.href = 'dashboard.html';
+                // Update navigation for logged-in users
+                const navLinks = document.querySelector('.nav-links');
+                navLinks.innerHTML = `
+                    <a href="index.html" class="active">Home</a>
+                    <a href="dashboard.html">Dashboard</a>
+                    <a href="pump.html">Pump Control</a>
+                    <a href="crop-prediction.html">Crop Prediction</a>
+                    <a href="disease-detection.html">Disease Detection</a>
+                    <a href="about.html">About Us</a>
+                    <button id="logoutBtn" class="btn btn-secondary">Logout</button>
+                `;
+
+                // Add logout functionality
+                document.getElementById('logoutBtn').addEventListener('click', async () => {
+                    try {
+                        await signOut(auth);
+                        window.location.reload(); // Reload the page to show non-authenticated view
+                    } catch (error) {
+                        console.error('Error logging out:', error);
+                        alert(`Logout failed: ${error.message}`);
+                    }
+                });
             }
         });
     </script>
