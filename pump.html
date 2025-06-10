@@ -341,7 +341,6 @@
             historyTable.innerHTML = `
                 <thead class="bg-gray-200 text-gray-700 uppercase text-sm leading-normal">
                     <tr>
-                        <th class="py-3 px-6 text-left">Status</th>
                         <th class="py-3 px-6 text-left">Start Time</th>
                         <th class="py-3 px-6 text-left">End Time</th>
                         <th class="py-3 px-6 text-left">Duration</th>
@@ -360,11 +359,6 @@
                     const row = document.createElement('tr');
                     row.className = 'border-b border-gray-200 hover:bg-gray-100';
                     row.innerHTML = `
-                        <td class="py-3 px-6 text-left whitespace-nowrap">
-                            <span class="${entry.status === 'OFF' ? 'bg-red-100 text-red-800' : 'bg-green-100 text-green-800'} text-xs font-medium px-2.5 py-0.5 rounded-full">
-                                ${entry.status}
-                            </span>
-                        </td>
                         <td class="py-3 px-6 text-left flex items-center">
                             <i class="fas fa-play-circle mr-2 text-green-500"></i> ${startTime}
                         </td>
@@ -380,7 +374,7 @@
             } else {
                 tbody.innerHTML = `
                     <tr>
-                        <td colspan="4" class="py-4 text-center text-gray-600">No pump activity history available.</td>
+                        <td colspan="3" class="py-4 text-center text-gray-600">No pump activity history available.</td>
                     </tr>
                 `;
             }
