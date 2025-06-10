@@ -432,7 +432,7 @@
                         </button>
                     `;
                     scheduleList.appendChild(scheduleItem);
-                });
+        });
 
                 // Add event listeners for delete buttons
                 document.querySelectorAll('[data-schedule-key]').forEach(button => {
@@ -478,7 +478,7 @@
                 scheduleDurationInput.value = '';
             } catch (error) {
                 alert(`Failed to add schedule: ${error.message}`);
-            }
+                }
         });
 
         // Firebase reference for irrigation schedules

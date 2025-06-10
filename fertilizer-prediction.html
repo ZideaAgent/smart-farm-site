@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SmartFarm - Fertilizer Prediction</title>
+    <link rel="stylesheet" href="styles.css">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-50">
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="nav-brand">
+                <div class="logo">
+                    <i class="fas fa-leaf"></i>
+                    <span>SmartFarm</span>
+                </div>
+            </a>
+            <div class="nav-links">
+                <a href="index.html">Home</a>
+                <a href="dashboard.html">Dashboard</a>
+                <a href="pump.html">Pump Control</a>
+                <a href="crop-prediction.html">Crop Prediction</a>
+                <a href="fertilizer-prediction.html" class="active">Fertilizer Prediction</a>
+                <a href="disease-detection.html">Disease Detection</a>
+                <a href="about.html">About Us</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mx-auto px-4 py-8">
+        <div class="max-w-4xl mx-auto">
+            <h1 class="text-3xl font-bold text-gray-800 mb-8 flex items-center">
+                <i class="fas fa-flask text-green-500 mr-3"></i>
+                Fertilizer Recommendation System
+            </h1>
+
+            <div class="bg-white rounded-lg shadow-lg p-6 mb-8">
+                <form id="fertilizerPredictionForm" class="space-y-6">
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        <!-- Nitrogen -->
+                        <div class="form-group">
+                            <label class="block text-sm font-medium text-gray-700 mb-2">
+                                Nitrogen (N)
+                                <i class="fas fa-info-circle text-gray-400 ml-1" title="Nitrogen content in soil (20-150 kg/ha)"></i>
+                            </label>
+                            <input type="number" id="nitrogen" name="nitrogen" min="20" max="150" required
+                                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500">
+                        </div>
+
+                        <!-- Phosphorus -->
+                        <div class="form-group">
+                            <label class="block text-sm font-medium text-gray-700 mb-2">
+                                Phosphorus (P)
+                                <i class="fas fa-info-circle text-gray-400 ml-1" title="Phosphorus content in soil (10-90 kg/ha)"></i>
+                            </label>
+                            <input type="number" id="phosphorus" name="phosphorus" min="10" max="90" required
+                                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500">
+                        </div>
+
+                        <!-- Potassium -->
+                        <div class="form-group">
+                            <label class="block text-sm font-medium text-gray-700 mb-2">
+                                Potassium (K)
+                                <i class="fas fa-info-circle text-gray-400 ml-1" title="Potassium content in soil (5-150 kg/ha)"></i>
+                            </label>
+                            <input type="number" id="potassium" name="potassium" min="5" max="150" required
+                                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500">
+                        </div>
+
+                        <!-- pH -->
+                        <div class="form-group">
+                            <label class="block text-sm font-medium text-gray-700 mb-2">
+                                pH Level
+                                <i class="fas fa-info-circle text-gray-400 ml-1" title="Soil pH level (5.5-8.5)"></i>
+                            </label>
+                            <input type="number" id="ph" name="ph" min="5.5" max="8.5" step="0.1" required
+                                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500">
+                        </div>
+
+                        <!-- Rainfall -->
+                        <div class="form-group">
+                            <label class="block text-sm font-medium text-gray-700 mb-2">
+                                Rainfall (mm)
+                                <i class="fas fa-info-circle text-gray-400 ml-1" title="Rainfall in millimeters (300-1700)"></i>
+                            </label>
+                            <input type="number" id="rainfall" name="rainfall" min="300" max="1700" required
+                                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500">
+                        </div>
+
+                        <!-- Temperature -->
+                        <div class="form-group">
+                            <label class="block text-sm font-medium text-gray-700 mb-2">
+                                Temperature (°C)
+                                <i class="fas fa-info-circle text-gray-400 ml-1" title="Temperature in Celsius (10-40)"></i>
+                            </label>
+                            <input type="number" id="temperature" name="temperature" min="10" max="40" step="0.1" required
+                                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500">
+                        </div>
+
+                        <!-- Crop Selection -->
+                        <div class="form-group md:col-span-2 lg:col-span-3">
+                            <label class="block text-sm font-medium text-gray-700 mb-2">
+                                Select Crop
+                                <i class="fas fa-info-circle text-gray-400 ml-1" title="Choose the crop you want to grow"></i>
+                            </label>
+                            <select id="crop" name="crop" required
+                                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500">
+                                <option value="">Select a crop...</option>
+                                <!-- Options will be populated from Firebase -->
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="flex justify-center space-x-4">
+                        <button type="submit" class="btn btn-primary flex items-center">
+                            <i class="fas fa-magic mr-2"></i>
+                            Get Fertilizer Recommendations
+                        </button>
+                        <button type="button" id="fetchFirebaseDataBtn" class="btn btn-outline flex items-center">
+                            <i class="fas fa-cloud-download-alt mr-2"></i>
+                            Fetch Sensor Data
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Loading Spinner -->
+            <div id="loadingSpinner" class="hidden">
+                <div class="flex justify-center items-center">
+                    <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-green-500"></div>
+                </div>
+            </div>
+
+            <!-- Results Section -->
+            <div id="resultsSection" class="hidden">
+                <h2 class="text-2xl font-bold text-gray-800 mb-4">Recommended Fertilizers</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="fertilizerResults">
+                    <!-- Results will be dynamically inserted here -->
+                </div>
+            </div>
+
+            <!-- Error Message -->
+            <div id="errorMessage" class="hidden bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mt-4" role="alert">
+                <span class="block sm:inline"></span>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        // Import the functions you need from the SDKs you need
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.7.1/firebase-app.js";
+        import { getDatabase, ref, get, set } from "https://www.gstatic.com/firebasejs/11.7.1/firebase-database.js";
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.7.1/firebase-auth.js";
+
+        // Your web app's Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyDL2h9dxXjU-2a6lEwK-iR2AL76FHLGc88",
+            authDomain: "smartfarm-50e9f.firebaseapp.com",
+            databaseURL: "https://smartfarm-50e9f-default-rtdb.firebaseio.com",
+            projectId: "smartfarm-50e9f",
+            storageBucket: "smartfarm-50e9f.firebasestorage.app",
+            messagingSenderId: "615423373084",
+            appId: "1:615423373084:web:e4af0444a7db2f9fa754d9",
+            measurementId: "G-8TDXE1451F"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const database = getDatabase(app);
+        const auth = getAuth(app);
+
+        // Check authentication state
+        onAuthStateChanged(auth, (user) => {
+            if (!user) {
+                window.location.href = 'login.html';
+            }
+        });
+
+        // Populate crop dropdown from Firebase
+        async function populateCropDropdown() {
+            try {
+                const controlPlantRef = ref(database, 'control/plant');
+                const snapshot = await get(controlPlantRef);
+                const cropSelect = document.getElementById('crop');
+                
+                if (snapshot.exists()) {
+                    const currentCrop = snapshot.val();
+                    const option = document.createElement('option');
+                    option.value = currentCrop;
+                    option.textContent = currentCrop;
+                    option.selected = true;
+                    cropSelect.appendChild(option);
+                }
+            } catch (error) {
+                console.error('Error fetching crop data:', error);
+            }
+        }
+
+        // Fetch sensor data from Firebase
+        async function fetchSensorData() {
+            try {
+                const sensorRef = ref(database, 'sensors');
+                const snapshot = await get(sensorRef);
+                
+                if (snapshot.exists()) {
+                    const data = snapshot.val();
+                    document.getElementById('nitrogen').value = data.nitrogen || '';
+                    document.getElementById('phosphorus').value = data.phosphorus || '';
+                    document.getElementById('potassium').value = data.potassium || '';
+                    document.getElementById('ph').value = data.ph || '';
+                    document.getElementById('rainfall').value = data.rainfall || '';
+                    document.getElementById('temperature').value = data.temperature || '';
+                }
+            } catch (error) {
+                console.error('Error fetching sensor data:', error);
+                document.getElementById('errorMessage').classList.remove('hidden');
+                document.getElementById('errorMessage').querySelector('span').textContent = 
+                    'Failed to fetch sensor data. Please try again.';
+            }
+        }
+
+        // Initialize the page
+        populateCropDropdown();
+
+        // Add event listeners
+        document.getElementById('fertilizerPredictionForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            document.getElementById('loadingSpinner').classList.remove('hidden');
+            document.getElementById('resultsSection').classList.add('hidden');
+            document.getElementById('errorMessage').classList.add('hidden');
+
+            const formData = {
+                nitrogen: parseFloat(document.getElementById('nitrogen').value),
+                phosphorus: parseFloat(document.getElementById('phosphorus').value),
+                potassium: parseFloat(document.getElementById('potassium').value),
+                ph: parseFloat(document.getElementById('ph').value),
+                rainfall: parseFloat(document.getElementById('rainfall').value),
+                temperature: parseFloat(document.getElementById('temperature').value),
+                crop: document.getElementById('crop').value
+            };
+
+            try {
+                // Here you would make an API call to your fertilizer prediction endpoint
+                // For now, we'll simulate a response
+                const response = await fetch('YOUR_API_ENDPOINT/fertilizer-prediction', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(formData)
+                });
+
+                if (!response.ok) {
+                    throw new Error('API request failed');
+                }
+
+                const data = await response.json();
+                
+                // Display results
+                const resultsContainer = document.getElementById('fertilizerResults');
+                resultsContainer.innerHTML = '';
+
+                data.forEach((fertilizer, index) => {
+                    const card = document.createElement('div');
+                    card.className = 'bg-white rounded-lg shadow-md p-6 transform transition-transform hover:scale-105';
+                    card.innerHTML = `
+                        <div class="flex items-center justify-between mb-4">
+                            <h3 class="text-xl font-semibold text-gray-800">${fertilizer.name}</h3>
+                            <span class="text-2xl font-bold text-green-500">${fertilizer.confidence}%</span>
+                        </div>
+                        <p class="text-gray-600 mb-4">${fertilizer.description}</p>
+                        <div class="w-full bg-gray-200 rounded-full h-2.5">
+                            <div class="bg-green-500 h-2.5 rounded-full" style="width: ${fertilizer.confidence}%"></div>
+                        </div>
+                        <button class="btn btn-secondary mt-4 w-full select-fertilizer-btn" data-fertilizer-name="${fertilizer.name}">
+                            Select This Fertilizer
+                        </button>
+                    `;
+                    resultsContainer.appendChild(card);
+                });
+
+                document.getElementById('resultsSection').classList.remove('hidden');
+            } catch (error) {
+                document.getElementById('errorMessage').classList.remove('hidden');
+                document.getElementById('errorMessage').querySelector('span').textContent = 
+                    'Failed to get fertilizer recommendations. Please try again.';
+            } finally {
+                document.getElementById('loadingSpinner').classList.add('hidden');
+            }
+        });
+
+        document.getElementById('fetchFirebaseDataBtn').addEventListener('click', fetchSensorData);
+
+        // Add event listeners for fertilizer selection
+        document.addEventListener('click', async (event) => {
+            if (event.target.classList.contains('select-fertilizer-btn')) {
+                const fertilizerName = event.target.dataset.fertilizerName;
+                if (confirm(`Are you sure you want to select ${fertilizerName} as the recommended fertilizer?`)) {
+                    try {
+                        const fertilizerRef = ref(database, 'control/fertilizer');
+                        await set(fertilizerRef, fertilizerName);
+                        alert(`${fertilizerName} has been successfully selected as the recommended fertilizer in Firebase!`);
+                    } catch (error) {
+                        document.getElementById('errorMessage').classList.remove('hidden');
+                        document.getElementById('errorMessage').querySelector('span').textContent = 
+                            `Failed to save fertilizer to Firebase: ${error.message}`;
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html> 
