@@ -133,7 +133,7 @@
     <script type="module">
         // Import the functions you need from the SDKs you need
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.7.1/firebase-app.js";
-        import { getDatabase, ref, onValue, set, update } from "https://www.gstatic.com/firebasejs/11.7.1/firebase-database.js";
+        import { getDatabase, ref, onValue, set, update, push } from "https://www.gstatic.com/firebasejs/11.7.1/firebase-database.js";
         import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.7.1/firebase-auth.js";
 
         // Your web app's Firebase configuration
@@ -168,6 +168,10 @@
         const pumpStatusIcon = document.getElementById('pumpStatusIcon');
         const lastRunTime = document.getElementById('lastRunTime');
         const waterLevel = document.getElementById('waterLevel');
+        const historyList = document.getElementById('historyList');
+        const historyFilter = document.getElementById('historyFilter');
+
+        let pumpStartTime = null;
 
         // Function to update pump status
         function updatePumpStatus(status) {
@@ -178,6 +182,28 @@
             // Update control/pump value
             const controlPumpRef = ref(database, 'control/pump');
             set(controlPumpRef, status ? 1 : 0);
+
+            // Record pump history
+            if (status) {
+                // Pump turned ON
+                pumpStartTime = new Date().getTime();
+            } else {
+                // Pump turned OFF
+                if (pumpStartTime) {
+                    const endTime = new Date().getTime();
+                    const durationMinutes = ((endTime - pumpStartTime) / (1000 * 60)).toFixed(1);
+
+                    const pumpHistoryRef = ref(database, 'pumpHistory');
+                    const newHistoryEntryRef = push(pumpHistoryRef); // Generate unique key
+                    set(newHistoryEntryRef, {
+                        startTime: pumpStartTime,
+                        endTime: endTime,
+                        duration: parseFloat(durationMinutes),
+                        status: 'OFF'
+                    });
+                    pumpStartTime = null; // Reset start time
+                }
+            }
         }
 
         // Function to update automatic mode
@@ -258,33 +284,20 @@
         });
 
         // Manual pump control
-        startPumpBtn.addEventListener('click', () => {
+        startPumpBtn.addEventListener('click', async () => {
             const duration = document.getElementById('pumpDuration').value;
-            const pumpRef = ref(database, 'pump');
-            
-            // Clear any existing timeout
-            if (window.pumpTimeout) {
-                clearTimeout(window.pumpTimeout);
+            if (duration && duration > 0) {
+                // Simulate pump running for the duration
+                updatePumpStatus(true); // Turn pump ON
+                alert(`Pump started for ${duration} minutes.`);
+
+                setTimeout(() => {
+                    updatePumpStatus(false); // Turn pump OFF after duration
+                    alert(`Pump stopped after ${duration} minutes.`);
+                }, duration * 60 * 1000); // Convert minutes to milliseconds
+            } else {
+                alert('Please enter a valid duration for the pump.');
             }
-
-            // Start the pump
-            update(pumpRef, {
-                status: true,
-                duration: parseInt(duration),
-                lastRun: Date.now()
-            });
-
-            // Set timeout to turn off pump after duration
-            window.pumpTimeout = setTimeout(() => {
-                const pumpRef = ref(database, 'pump');
-                update(pumpRef, {
-                    status: false,
-                    lastRun: null
-                });
-                // Update control/pump to 0
-                const controlPumpRef = ref(database, 'control/pump');
-                set(controlPumpRef, 0);
-            }, parseInt(duration) * 60 * 1000); // Convert minutes to milliseconds
         });
 
         // Handle pump toggle
@@ -319,6 +332,55 @@
                 };
                 set(scheduleRef, newSchedule);
             }
+        });
+
+        // Function to render pump history
+        function renderPumpHistory(historyData) {
+            historyList.innerHTML = '';
+            if (historyData) {
+                const sortedHistory = Object.values(historyData).sort((a, b) => b.startTime - a.startTime);
+                sortedHistory.forEach(entry => {
+                    const startTime = new Date(entry.startTime).toLocaleString();
+                    const endTime = new Date(entry.endTime).toLocaleString();
+                    const historyItem = document.createElement('div');
+                    historyItem.className = 'bg-gray-100 p-4 rounded-lg shadow-sm mb-3';
+                    historyItem.innerHTML = `
+                        <p class="font-semibold">Status: <span class="${entry.status === 'OFF' ? 'text-red-600' : 'text-green-600'}">${entry.status}</span></p>
+                        <p class="text-sm text-gray-700">Start: ${startTime}</p>
+                        <p class="text-sm text-gray-700">End: ${endTime}</p>
+                        <p class="text-sm text-gray-700">Duration: ${entry.duration} minutes</p>
+                    `;
+                    historyList.appendChild(historyItem);
+                });
+            } else {
+                historyList.innerHTML = '<p class="text-gray-600">No pump activity history available.</p>';
+            }
+        }
+
+        // Listen for pump history updates
+        const pumpHistoryRef = ref(database, 'pumpHistory');
+        onValue(pumpHistoryRef, (snapshot) => {
+            const data = snapshot.val();
+            renderPumpHistory(data);
+        });
+
+        // Enable history section elements (remove future work)
+        document.querySelector('.history-section h2 span').remove();
+        document.getElementById('historyFilter').disabled = false;
+        document.querySelector('.schedule-section h2 span').remove();
+        document.getElementById('addSchedule').disabled = false;
+        document.querySelector('#scheduleList .future-work-message').remove();
+        document.querySelector('#historyList .future-work-message').remove();
+
+        // Filter functionality (basic, can be expanded)
+        historyFilter.addEventListener('change', (event) => {
+            // Implement filtering logic here if needed based on the selected value
+            // For now, it will just re-render all history. More complex filtering 
+            // would involve querying Firebase with orderByChild and startAt/endAt
+            onValue(pumpHistoryRef, (snapshot) => {
+                const data = snapshot.val();
+                renderPumpHistory(data);
+            });
         });
     </script>
 </body>
