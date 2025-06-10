@@ -97,26 +97,29 @@
         </div>
 
         <div class="schedule-section">
-            <h2>Irrigation Schedule <span class="future-work">(Future Work)</span></h2>
+            <h2>Irrigation Schedule</h2>
             <div class="schedule-card">
                 <div class="schedule-header">
                     <h3>Today's Schedule</h3>
-                    <button class="btn btn-outline" id="addSchedule" disabled>
-                        <i class="fas fa-plus"></i> Add Time
+                    <div class="flex space-x-4 mb-4">
+                        <input type="time" id="scheduleTime" class="p-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500 flex-grow">
+                        <input type="number" id="scheduleDuration" min="1" placeholder="Duration (min)" class="p-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500 w-32">
+                    </div>
+                    <button class="btn btn-outline w-full" id="addSchedule">
+                        <i class="fas fa-plus mr-2"></i> Add Schedule
                     </button>
                 </div>
-                <div class="schedule-list" id="scheduleList">
+                <div class="schedule-list mt-4" id="scheduleList">
                     <!-- Schedule items will be added here dynamically -->
-                    <p class="future-work-message">This feature will be available in future updates.</p>
                 </div>
             </div>
         </div>
 
         <div class="history-section">
-            <h2>Pump Activity History <span class="future-work">(Future Work)</span></h2>
+            <h2>Pump Activity History</h2>
             <div class="history-card">
                 <div class="history-filters">
-                    <select id="historyFilter" disabled>
+                    <select id="historyFilter">
                         <option value="today">Today</option>
                         <option value="week">This Week</option>
                         <option value="month">This Month</option>
@@ -124,7 +127,6 @@
                 </div>
                 <div class="history-list" id="historyList">
                     <!-- History items will be added here dynamically -->
-                    <p class="future-work-message">This feature will be available in future updates.</p>
                 </div>
             </div>
         </div>
@@ -138,13 +140,13 @@
 
         // Your web app's Firebase configuration
         const firebaseConfig = {
-            apiKey: "AIzaSyDL2h9dxXjU-2a6lEwK-iR2AL76FHLGc88", // Use YOUR_API_KEY placeholder
-            authDomain: "smartfarm-50e9f.firebaseapp.com", // Use YOUR_AUTH_DOMAIN placeholder
+            apiKey: "AIzaSyDL2h9dxXjU-2a6lEwK-iR2AL76FHLGc88",
+            authDomain: "smartfarm-50e9f.firebaseapp.com",
             databaseURL: "https://smartfarm-50e9f-default-rtdb.firebaseio.com",
-            projectId: "smartfarm-50e9f", // Use YOUR_PROJECT_ID placeholder
-            storageBucket: "smartfarm-50e9f.firebasestorage.app", // Use YOUR_STORAGE_BUCKET placeholder
-            messagingSenderId: "615423373084", // Use YOUR_MESSAGING_SENDER_ID placeholder
-            appId: "1:615423373084:web:e4af0444a7db2f9fa754d9", // Use YOUR_APP_ID placeholder
+            projectId: "smartfarm-50e9f",
+            storageBucket: "smartfarm-50e9f.firebasestorage.app",
+            messagingSenderId: "615423373084",
+            appId: "1:615423373084:web:e4af0444a7db2f9fa754d9",
             measurementId: "G-8TDXE1451F"
         };
 
@@ -170,6 +172,12 @@
         const waterLevel = document.getElementById('waterLevel');
         const historyList = document.getElementById('historyList');
         const historyFilter = document.getElementById('historyFilter');
+
+        // New DOM elements for scheduling
+        const scheduleTimeInput = document.getElementById('scheduleTime');
+        const scheduleDurationInput = document.getElementById('scheduleDuration');
+        const addScheduleBtn = document.getElementById('addSchedule');
+        const scheduleList = document.getElementById('scheduleList');
 
         let pumpStartTime = null;
 
@@ -321,23 +329,10 @@
             updateAutoMode(e.target.checked);
         });
 
-        // Add schedule item
-        document.getElementById('addSchedule').addEventListener('click', () => {
-            const time = prompt('Enter time (HH:MM):');
-            if (time) {
-                const scheduleRef = ref(database, 'pump/schedule');
-                const newSchedule = {
-                    time: time,
-                    duration: 5
-                };
-                set(scheduleRef, newSchedule);
-            }
-        });
-
         // Function to render pump history
         function renderPumpHistory(historyData) {
             const historyTable = document.createElement('table');
-            historyTable.className = 'min-w-full bg-white rounded-lg shadow-xl overflow-hidden';
+            historyTable.className = 'min-w-full bg-white rounded-lg shadow-xl overflow-hidden'; // Enhanced shadow
             historyTable.innerHTML = `
                 <thead class="bg-green-600 text-white uppercase text-sm leading-normal">
                     <tr>
@@ -357,6 +352,7 @@
                     const startTime = new Date(entry.startTime).toLocaleString();
                     const endTime = new Date(entry.endTime).toLocaleString();
                     const row = document.createElement('tr');
+                    // Alternating row colors for better readability
                     row.className = `border-b border-gray-200 ${index % 2 === 0 ? 'bg-gray-50' : 'bg-white'} hover:bg-gray-100 transition duration-150 ease-in-out`;
                     row.innerHTML = `
                         <td class="py-4 px-6 text-left flex items-center">
@@ -389,13 +385,80 @@
             renderPumpHistory(data);
         });
 
-        // Enable history section elements (remove future work)
-        document.querySelector('.history-section h2 span').remove();
+        // Function to render irrigation schedule
+        function renderIrrigationSchedule(scheduleData) {
+            scheduleList.innerHTML = '';
+            if (scheduleData) {
+                const sortedSchedule = Object.values(scheduleData).sort((a, b) => a.scheduleTime.localeCompare(b.scheduleTime));
+                sortedSchedule.forEach((entry) => {
+                    const scheduleItem = document.createElement('div');
+                    scheduleItem.className = 'bg-white p-4 rounded-lg shadow-md mb-3 border border-gray-200';
+                    scheduleItem.innerHTML = `
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="font-bold text-lg text-gray-800">Scheduled Task</span>
+                            <span class="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded-full">Active</span>
+                        </div>
+                        <div class="space-y-1">
+                            <p class="text-sm text-gray-700 flex items-center"><i class="fas fa-clock mr-2 text-indigo-500"></i> <strong>Time:</strong> ${entry.scheduleTime}</p>
+                            <p class="text-sm text-gray-700 flex items-center"><i class="fas fa-hourglass-start mr-2 text-purple-500"></i> <strong>Duration:</strong> <span class="font-semibold">${entry.duration} min</span></p>
+                        </div>
+                    `;
+                    scheduleList.appendChild(scheduleItem);
+                });
+            } else {
+                scheduleList.innerHTML = '<p class="text-gray-600 text-center py-4">No irrigation schedules set.</p>';
+            }
+        }
+
+        // Event listener for adding schedule
+        addScheduleBtn.addEventListener('click', async () => {
+            const scheduleTime = scheduleTimeInput.value;
+            const duration = scheduleDurationInput.value;
+
+            if (!scheduleTime || !duration || duration <= 0) {
+                alert('Please enter a valid time and a positive duration for the schedule.');
+                return;
+            }
+
+            try {
+                const irrigationScheduleRef = ref(database, 'irrigationSchedule');
+                const newScheduleEntryRef = push(irrigationScheduleRef);
+                await set(newScheduleEntryRef, {
+                    scheduleTime: scheduleTime,
+                    duration: parseFloat(duration),
+                    createdAt: new Date().getTime(),
+                    status: 'active'
+                });
+                alert('Irrigation schedule added successfully!');
+                // Clear inputs
+                scheduleTimeInput.value = '';
+                scheduleDurationInput.value = '';
+            } catch (error) {
+                alert(`Failed to add schedule: ${error.message}`);
+            }
+        });
+
+        // Listen for irrigation schedule updates
+        const irrigationScheduleRef = ref(database, 'irrigationSchedule');
+        onValue(irrigationScheduleRef, (snapshot) => {
+            const data = snapshot.val();
+            renderIrrigationSchedule(data);
+        });
+
+        // Enable history section elements (remove future work labels if still present)
+        const historySectionH2Span = document.querySelector('.history-section h2 span');
+        if (historySectionH2Span) historySectionH2Span.remove();
         document.getElementById('historyFilter').disabled = false;
-        document.querySelector('.schedule-section h2 span').remove();
-        document.getElementById('addSchedule').disabled = false;
-        document.querySelector('#scheduleList .future-work-message').remove();
-        document.querySelector('#historyList .future-work-message').remove();
+
+        // Enable schedule section elements (remove future work labels if still present)
+        const scheduleSectionH2Span = document.querySelector('.schedule-section h2 span');
+        if (scheduleSectionH2Span) scheduleSectionH2Span.remove();
+        // The addSchedule button is already enabled by default in the HTML as we are removing the disabled attribute.
+
+        const futureWorkMessageSchedule = document.querySelector('#scheduleList .future-work-message');
+        if (futureWorkMessageSchedule) futureWorkMessageSchedule.remove();
+        const futureWorkMessageHistory = document.querySelector('#historyList .future-work-message');
+        if (futureWorkMessageHistory) futureWorkMessageHistory.remove();
 
         // Filter functionality (basic, can be expanded)
         historyFilter.addEventListener('change', (event) => {
