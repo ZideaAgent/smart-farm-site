@@ -343,17 +343,24 @@
                     const startTime = new Date(entry.startTime).toLocaleString();
                     const endTime = new Date(entry.endTime).toLocaleString();
                     const historyItem = document.createElement('div');
-                    historyItem.className = 'bg-gray-100 p-4 rounded-lg shadow-sm mb-3';
+                    historyItem.className = 'bg-white p-4 rounded-lg shadow-md mb-4 border border-gray-200';
                     historyItem.innerHTML = `
-                        <p class="font-semibold">Status: <span class="${entry.status === 'OFF' ? 'text-red-600' : 'text-green-600'}">${entry.status}</span></p>
-                        <p class="text-sm text-gray-700">Start: ${startTime}</p>
-                        <p class="text-sm text-gray-700">End: ${endTime}</p>
-                        <p class="text-sm text-gray-700">Duration: ${entry.duration} minutes</p>
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="font-bold text-lg text-gray-800">Pump Activity</span>
+                            <span class="${entry.status === 'OFF' ? 'bg-red-100 text-red-800' : 'bg-green-100 text-green-800'} text-xs font-medium px-2.5 py-0.5 rounded-full">
+                                ${entry.status}
+                            </span>
+                        </div>
+                        <div class="space-y-1">
+                            <p class="text-sm text-gray-700 flex items-center"><i class="fas fa-play-circle mr-2 text-green-500"></i> <strong>Start:</strong> ${startTime}</p>
+                            <p class="text-sm text-gray-700 flex items-center"><i class="fas fa-stop-circle mr-2 text-red-500"></i> <strong>End:</strong> ${endTime}</p>
+                            <p class="text-sm text-gray-700 flex items-center"><i class="fas fa-hourglass-half mr-2 text-blue-500"></i> <strong>Duration:</strong> <span class="font-semibold text-gray-900">${entry.duration} minutes</span></p>
+                        </div>
                     `;
                     historyList.appendChild(historyItem);
                 });
             } else {
-                historyList.innerHTML = '<p class="text-gray-600">No pump activity history available.</p>';
+                historyList.innerHTML = '<p class="text-gray-600 text-center py-4">No pump activity history available.</p>';
             }
         }
 
