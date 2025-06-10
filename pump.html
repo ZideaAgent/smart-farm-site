@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SmartFarm - Pump Control</title>
+    <link rel="stylesheet" href="styles.css">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="nav-brand">
+                <div class="logo">
+                    <i class="fas fa-leaf"></i>
+                    <span>SmartFarm</span>
+                </div>
+            </a>
+            <div class="nav-links">
+                <a href="index.html">Home</a>
+                <a href="dashboard.html">Dashboard</a>
+                <a href="pump.html">Pump Control</a>
+                <a href="crop-prediction.html">Crop Prediction</a>
+                <a href="disease-detection.html">Disease Detection</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="main-content">
+        <h1>Smart Pump Control</h1>
+        
+        <div class="pump-status-section">
+            <div class="status-card">
+                <div class="status-icon">
+                    <i class="fas fa-power-off" id="pumpStatusIcon"></i>
+                </div>
+                <div class="status-info">
+                    <h3>Pump Status</h3>
+                    <p id="pumpStatus">Checking...</p>
+                </div>
+            </div>
+            <div class="status-card">
+                <div class="status-icon">
+                    <i class="fas fa-clock" id="lastRunIcon"></i>
+                </div>
+                <div class="status-info">
+                    <h3>Last Run</h3>
+                    <p id="lastRunTime">--:--</p>
+                </div>
+            </div>
+            <div class="status-card">
+                <div class="status-icon">
+                    <i class="fas fa-tint" id="waterLevelIcon"></i>
+                </div>
+                <div class="status-info">
+                    <h3>Water Level</h3>
+                    <p id="waterLevel">--%</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="control-section">
+            <div class="control-card manual-mode" id="manualControl">
+                <h2>Manual Control</h2>
+                <div class="control-options">
+                    <div class="control-group">
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="pumpToggle">
+                            <span class="slider"></span>
+                        </label>
+                        <span class="control-label">Pump Power</span>
+                    </div>
+                    <div class="control-group">
+                        <label for="pumpDuration">Duration (minutes)</label>
+                        <input type="number" id="pumpDuration" min="1" max="60" value="5">
+                    </div>
+                    <button class="btn btn-primary" id="startPump">
+                        <i class="fas fa-play"></i> Start Pump
+                    </button>
+                </div>
+            </div>
+
+            <div class="control-card auto-mode">
+                <h2>Automatic Mode</h2>
+                <div class="control-options">
+                    <div class="control-group">
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="autoModeToggle">
+                            <span class="slider"></span>
+                        </label>
+                        <span class="control-label">Enable Auto Mode</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="schedule-section">
+            <h2>Irrigation Schedule <span class="future-work">(Future Work)</span></h2>
+            <div class="schedule-card">
+                <div class="schedule-header">
+                    <h3>Today's Schedule</h3>
+                    <button class="btn btn-outline" id="addSchedule" disabled>
+                        <i class="fas fa-plus"></i> Add Time
+                    </button>
+                </div>
+                <div class="schedule-list" id="scheduleList">
+                    <!-- Schedule items will be added here dynamically -->
+                    <p class="future-work-message">This feature will be available in future updates.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="history-section">
+            <h2>Pump Activity History <span class="future-work">(Future Work)</span></h2>
+            <div class="history-card">
+                <div class="history-filters">
+                    <select id="historyFilter" disabled>
+                        <option value="today">Today</option>
+                        <option value="week">This Week</option>
+                        <option value="month">This Month</option>
+                    </select>
+                </div>
+                <div class="history-list" id="historyList">
+                    <!-- History items will be added here dynamically -->
+                    <p class="future-work-message">This feature will be available in future updates.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        // Import the functions you need from the SDKs you need
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.7.1/firebase-app.js";
+        import { getDatabase, ref, onValue, set, update } from "https://www.gstatic.com/firebasejs/11.7.1/firebase-database.js";
+
+        // Your web app's Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyDL2h9dxXjU-2a6lEwK-iR2AL76FHLGc88",
+            authDomain: "smartfarm-50e9f.firebaseapp.com",
+            databaseURL: "https://smartfarm-50e9f-default-rtdb.firebaseio.com",
+            projectId: "smartfarm-50e9f",
+            storageBucket: "smartfarm-50e9f.firebasestorage.app",
+            messagingSenderId: "615423373084",
+            appId: "1:615423373084:web:e4af0444a7db2f9fa754d9",
+            measurementId: "G-8TDXE1451F"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const database = getDatabase(app);
+
+        // DOM Elements
+        const pumpToggle = document.getElementById('pumpToggle');
+        const autoModeToggle = document.getElementById('autoModeToggle');
+        const startPumpBtn = document.getElementById('startPump');
+        const pumpStatus = document.getElementById('pumpStatus');
+        const pumpStatusIcon = document.getElementById('pumpStatusIcon');
+        const lastRunTime = document.getElementById('lastRunTime');
+        const waterLevel = document.getElementById('waterLevel');
+
+        // Function to update pump status
+        function updatePumpStatus(status) {
+            pumpStatus.textContent = status ? 'Running' : 'Stopped';
+            pumpStatusIcon.style.color = status ? '#2ecc71' : '#e74c3c';
+            pumpToggle.checked = status;
+            
+            // Update control/pump value
+            const controlPumpRef = ref(database, 'control/pump');
+            set(controlPumpRef, status ? 1 : 0);
+        }
+
+        // Function to update automatic mode
+        function updateAutoMode(enabled) {
+            autoModeToggle.checked = enabled;
+            // Update control/automatic value
+            const controlAutoRef = ref(database, 'control/automatic');
+            set(controlAutoRef, enabled);
+
+            // Show/hide manual control based on automatic mode
+            const manualControl = document.getElementById('manualControl');
+            const autoModeCard = document.querySelector('.auto-mode');
+            
+            if (enabled) {
+                manualControl.style.display = 'none';
+                autoModeCard.classList.add('active');
+                // If automatic mode is enabled, ensure pump is off
+                const pumpRef = ref(database, 'pump');
+                update(pumpRef, {
+                    status: false,
+                    lastRun: null
+                });
+                const controlPumpRef = ref(database, 'control/pump');
+                set(controlPumpRef, 0);
+            } else {
+                manualControl.style.display = 'block';
+                autoModeCard.classList.remove('active');
+            }
+        }
+
+        // Function to update last run time
+        function updateLastRunTime(timestamp) {
+            if (timestamp) {
+                const date = new Date(timestamp);
+                lastRunTime.textContent = date.toLocaleTimeString();
+            } else {
+                lastRunTime.textContent = '--:--';
+            }
+        }
+
+        // Function to update water level
+        function updateWaterLevel(level) {
+            waterLevel.textContent = `${level}%`;
+            const waterLevelIcon = document.getElementById('waterLevelIcon');
+            if (level < 20) {
+                waterLevelIcon.style.color = '#e74c3c';
+            } else if (level < 50) {
+                waterLevelIcon.style.color = '#f1c40f';
+            } else {
+                waterLevelIcon.style.color = '#2ecc71';
+            }
+        }
+
+        // Listen for real-time updates
+        const pumpRef = ref(database, 'pump');
+        onValue(pumpRef, (snapshot) => {
+            const data = snapshot.val();
+            if (data) {
+                updatePumpStatus(data.status);
+                updateLastRunTime(data.lastRun);
+            }
+        });
+
+        // Listen for water level updates
+        const waterRef = ref(database, 'sensor/water');
+        onValue(waterRef, (snapshot) => {
+            const waterLevel = snapshot.val();
+            if (waterLevel !== null) {
+                updateWaterLevel(waterLevel);
+            }
+        });
+
+        // Listen for automatic mode changes
+        const autoModeRef = ref(database, 'control/automatic');
+        onValue(autoModeRef, (snapshot) => {
+            const autoMode = snapshot.val();
+            updateAutoMode(autoMode);
+        });
+
+        // Manual pump control
+        startPumpBtn.addEventListener('click', () => {
+            const duration = document.getElementById('pumpDuration').value;
+            const pumpRef = ref(database, 'pump');
+            
+            // Clear any existing timeout
+            if (window.pumpTimeout) {
+                clearTimeout(window.pumpTimeout);
+            }
+
+            // Start the pump
+            update(pumpRef, {
+                status: true,
+                duration: parseInt(duration),
+                lastRun: Date.now()
+            });
+
+            // Set timeout to turn off pump after duration
+            window.pumpTimeout = setTimeout(() => {
+                const pumpRef = ref(database, 'pump');
+                update(pumpRef, {
+                    status: false,
+                    lastRun: null
+                });
+                // Update control/pump to 0
+                const controlPumpRef = ref(database, 'control/pump');
+                set(controlPumpRef, 0);
+            }, parseInt(duration) * 60 * 1000); // Convert minutes to milliseconds
+        });
+
+        // Handle pump toggle
+        pumpToggle.addEventListener('change', (e) => {
+            const pumpRef = ref(database, 'pump');
+            if (!e.target.checked) {
+                // When manually turning off, clear any existing timeout
+                if (window.pumpTimeout) {
+                    clearTimeout(window.pumpTimeout);
+                    window.pumpTimeout = null;
+                }
+            }
+            update(pumpRef, {
+                status: e.target.checked,
+                lastRun: e.target.checked ? Date.now() : null
+            });
+        });
+
+        // Handle automatic mode toggle
+        autoModeToggle.addEventListener('change', (e) => {
+            updateAutoMode(e.target.checked);
+        });
+
+        // Add schedule item
+        document.getElementById('addSchedule').addEventListener('click', () => {
+            const time = prompt('Enter time (HH:MM):');
+            if (time) {
+                const scheduleRef = ref(database, 'pump/schedule');
+                const newSchedule = {
+                    time: time,
+                    duration: 5
+                };
+                set(scheduleRef, newSchedule);
+            }
+        });
+    </script>
+</body>
+</html>

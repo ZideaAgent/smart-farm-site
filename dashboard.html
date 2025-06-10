@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SmartFarm - Dashboard</title>
+    <link rel="stylesheet" href="styles.css">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <!-- Plotly.js -->
+    <script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="nav-brand">
+                <div class="logo">
+                    <i class="fas fa-leaf"></i>
+                    <span>SmartFarm</span>
+                </div>
+            </a>
+            <div class="nav-links">
+                <a href="index.html">Home</a>
+                <a href="dashboard.html">Dashboard</a>
+                <a href="pump.html">Pump Control</a>
+                <a href="crop-prediction.html">Crop Prediction</a>
+                <a href="disease-detection.html">Disease Detection</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="main-content">
+        <h1>Farm Dashboard</h1>
+        <div class="card-grid">
+            <div class="card">
+                <div class="card-icon">
+                    <i class="fas fa-temperature-high" id="tempIcon"></i>
+                </div>
+                <div class="sensor-label">Temperature</div>
+                <div class="sensor-value" id="temperature">--°C</div>
+            </div>
+            <div class="card">
+                <div class="card-icon">
+                    <i class="fas fa-droplet" id="humidityIcon"></i>
+                </div>
+                <div class="sensor-label">Humidity</div>
+                <div class="sensor-value" id="humidity">--%</div>
+            </div>
+            <div class="card">
+                <div class="card-icon">
+                    <i class="fas fa-seedling" id="soilIcon"></i>
+                </div>
+                <div class="sensor-label">Soil Moisture</div>
+                <div class="sensor-value" id="soilMoisture">--%</div>
+            </div>
+            <div class="card">
+                <div class="card-icon">
+                    <i class="fas fa-cloud-rain" id="rainIcon"></i>
+                </div>
+                <div class="sensor-label">Rain Level</div>
+                <div class="sensor-value" id="rainLevel">--mm</div>
+            </div>
+            <div class="card" id="waterLevelCard">
+                <div class="card-icon">
+                    <i class="fas fa-water" id="waterIcon"></i>
+                </div>
+                <div class="sensor-label">Water Level</div>
+                <div class="sensor-value" id="waterLevel">--%</div>
+            </div>
+        </div>
+
+        <div class="charts-section">
+            <h2>Sensor Data History</h2>
+            <div class="charts-grid">
+                <div class="chart-card">
+                    <h3>Temperature History</h3>
+                    <div id="temperatureChart"></div>
+                </div>
+                <div class="chart-card">
+                    <h3>Humidity History</h3>
+                    <div id="humidityChart"></div>
+                </div>
+                <div class="chart-card">
+                    <h3>Soil Moisture History</h3>
+                    <div id="soilChart"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        // Import the functions you need from the SDKs you need
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.7.1/firebase-app.js";
+        import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/11.7.1/firebase-database.js";
+        import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.7.1/firebase-analytics.js";
+
+        // Your web app's Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyDL2h9dxXjU-2a6lEwK-iR2AL76FHLGc88",
+            authDomain: "smartfarm-50e9f.firebaseapp.com",
+            databaseURL: "https://smartfarm-50e9f-default-rtdb.firebaseio.com",
+            projectId: "smartfarm-50e9f",
+            storageBucket: "smartfarm-50e9f.firebasestorage.app",
+            messagingSenderId: "615423373084",
+            appId: "1:615423373084:web:e4af0444a7db2f9fa754d9",
+            measurementId: "G-8TDXE1451F"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const analytics = getAnalytics(app);
+        const database = getDatabase(app);
+
+        // Function to update sensor values
+        function updateSensorValue(elementId, value, unit) {
+            const element = document.getElementById(elementId);
+            if (element) {
+                // Check if value is 0 or a valid number
+                if (value === 0 || value === '0' || (value !== undefined && value !== null && value !== '--')) {
+                    element.textContent = `${value}${unit}`;
+                } else {
+                    element.textContent = `--${unit}`;
+                }
+            }
+        }
+
+        // Function to update icons based on values
+        function updateIcons(data) {
+            // Temperature icon
+            const tempIcon = document.getElementById('tempIcon');
+            if (data.temp > 30) {
+                tempIcon.className = 'fas fa-temperature-high';
+                tempIcon.style.color = '#ff4444';
+            } else if (data.temp < 15) {
+                tempIcon.className = 'fas fa-temperature-low';
+                tempIcon.style.color = '#4444ff';
+            } else {
+                tempIcon.className = 'fas fa-temperature-half';
+                tempIcon.style.color = '#44ff44';
+            }
+
+            // Humidity icon
+            const humidityIcon = document.getElementById('humidityIcon');
+            if (data.humidity > 70) {
+                humidityIcon.style.color = '#4444ff';
+            } else if (data.humidity < 30) {
+                humidityIcon.style.color = '#ff4444';
+            } else {
+                humidityIcon.style.color = '#44ff44';
+            }
+
+            // Soil moisture icon
+            const soilIcon = document.getElementById('soilIcon');
+            if (data.soil > 70) {
+                soilIcon.style.color = '#4444ff';
+            } else if (data.soil < 30) {
+                soilIcon.style.color = '#ff4444';
+            } else {
+                soilIcon.style.color = '#44ff44';
+            }
+
+            // Rain icon
+            const rainIcon = document.getElementById('rainIcon');
+            if (data.rain > 0) {
+                rainIcon.className = 'fas fa-cloud-showers-heavy';
+                rainIcon.style.color = '#4444ff';
+            } else {
+                rainIcon.className = 'fas fa-cloud-sun';
+                rainIcon.style.color = '#ffaa44';
+            }
+
+            // Water level icon and card color
+            const waterIcon = document.getElementById('waterIcon');
+            const waterCard = document.getElementById('waterLevelCard');
+            if (data.water > 70) {
+                waterIcon.style.color = '#44ff44';
+                waterCard.style.backgroundColor = '#e8f5e9';
+            } else if (data.water < 30) {
+                waterIcon.style.color = '#ff4444';
+                waterCard.style.backgroundColor = '#ffebee';
+            } else {
+                waterIcon.style.color = '#ffaa44';
+                waterCard.style.backgroundColor = '#fff3e0';
+            }
+        }
+
+        // Initialize charts with empty data
+        let temperatureChart = null;
+        let humidityChart = null;
+        let soilChart = null;
+
+        // Customize chart layouts
+        const commonLayout = {
+            paper_bgcolor: 'rgba(0,0,0,0)',
+            plot_bgcolor: 'rgba(0,0,0,0)',
+            font: {
+                color: '#2c3e50'
+            },
+            margin: {
+                l: 50,
+                r: 20,
+                t: 50,
+                b: 50
+            },
+            xaxis: {
+                title: { text: 'Time' },
+                showgrid: true,
+                gridcolor: '#e0e0e0'
+            },
+            yaxis: {
+                title: { text: 'Value' },
+                showgrid: true,
+                gridcolor: '#e0e0e0'
+            }
+        };
+
+        // Function to update charts with data from Firebase
+        function updateCharts(chartData) {
+            if (chartData) {
+                // Update temperature chart
+                if (chartData.temperature_chart) {
+                    const tempData = JSON.parse(chartData.temperature_chart);
+                    if (!temperatureChart) {
+                        temperatureChart = Plotly.newPlot('temperatureChart', tempData.data, {
+                            ...tempData.layout,
+                            ...commonLayout
+                        });
+                    } else {
+                        Plotly.react('temperatureChart', tempData.data, {
+                            ...tempData.layout,
+                            ...commonLayout
+                        });
+                    }
+                }
+
+                // Update humidity chart
+                if (chartData.humidity_chart) {
+                    const humidityData = JSON.parse(chartData.humidity_chart);
+                    if (!humidityChart) {
+                        humidityChart = Plotly.newPlot('humidityChart', humidityData.data, {
+                            ...humidityData.layout,
+                            ...commonLayout
+                        });
+                    } else {
+                        Plotly.react('humidityChart', humidityData.data, {
+                            ...humidityData.layout,
+                            ...commonLayout
+                        });
+                    }
+                }
+
+                // Update soil chart
+                if (chartData.soil_chart) {
+                    const soilData = JSON.parse(chartData.soil_chart);
+                    if (!soilChart) {
+                        soilChart = Plotly.newPlot('soilChart', soilData.data, {
+                            ...soilData.layout,
+                            ...commonLayout
+                        });
+                    } else {
+                        Plotly.react('soilChart', soilData.data, {
+                            ...soilData.layout,
+                            ...commonLayout
+                        });
+                    }
+                }
+            }
+        }
+
+        // Listen for real-time updates
+        const sensorsRef = ref(database, 'sensor');
+        const chartsRef = ref(database, 'charts');
+        
+        // Listen for sensor data updates
+        onValue(sensorsRef, (snapshot) => {
+            const data = snapshot.val();
+            if (data) {
+                updateSensorValue('temperature', data.temp || '--', '°C');
+                updateSensorValue('humidity', data.humidity || '--', '%');
+                updateSensorValue('soilMoisture', data.soil || '--', '%');
+                updateSensorValue('rainLevel', data.rain !== undefined ? data.rain : '--', 'mm');
+                updateSensorValue('waterLevel', data.water || '--', '%');
+                updateIcons(data);
+            }
+        }, (error) => {
+            console.error("Error reading sensor data:", error);
+        });
+
+        // Listen for chart data updates
+        onValue(chartsRef, (snapshot) => {
+            const data = snapshot.val();
+            if (data) {
+                updateCharts(data);
+            }
+        }, (error) => {
+            console.error("Error reading chart data:", error);
+        });
+    </script>
+</body>
+</html>
