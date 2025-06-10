@@ -101,10 +101,14 @@
                         </div>
                     </div>
 
-                    <div class="flex justify-center">
+                    <div class="flex justify-center space-x-4">
                         <button type="submit" class="btn btn-primary flex items-center">
                             <i class="fas fa-magic mr-2"></i>
                             Get Crop Recommendations
+                        </button>
+                        <button type="button" id="fetchFirebaseDataBtn" class="btn btn-outline flex items-center">
+                            <i class="fas fa-cloud-download-alt mr-2"></i>
+                            Fetch Sensor Data
                         </button>
                     </div>
                 </form>
@@ -132,7 +136,27 @@
         </div>
     </div>
 
-    <script>
+    <script type="module">
+        // Import the functions you need from the SDKs you need
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.7.1/firebase-app.js";
+        import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/11.7.1/firebase-database.js";
+
+        // Your web app's Firebase configuration (copy from dashboard.html or pump.html)
+        const firebaseConfig = {
+            apiKey: "AIzaSyDL2h9dxXjU-2a6lEwK-iR2AL76FHLGc88",
+            authDomain: "smartfarm-50e9f.firebaseapp.com",
+            databaseURL: "https://smartfarm-50e9f-default-rtdb.firebaseio.com",
+            projectId: "smartfarm-50e9f",
+            storageBucket: "smartfarm-50e9f.firebasestorage.app",
+            messagingSenderId: "615423373084",
+            appId: "1:615423373084:web:e4af0444a7db2f9fa754d9",
+            measurementId: "G-8TDXE1451F"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const database = getDatabase(app);
+
         document.getElementById('cropPredictionForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             
@@ -208,6 +232,35 @@
                     errorMessageText = `Network Error: ${error.message}`;
                 }
                 document.getElementById('errorMessage').querySelector('span').textContent = errorMessageText;
+            } finally {
+                document.getElementById('loadingSpinner').classList.add('hidden');
+            }
+        });
+
+        const fetchFirebaseDataBtn = document.getElementById('fetchFirebaseDataBtn');
+        fetchFirebaseDataBtn.addEventListener('click', async () => {
+            try {
+                // Show loading spinner
+                document.getElementById('loadingSpinner').classList.remove('hidden');
+                document.getElementById('errorMessage').classList.add('hidden');
+
+                const sensorRef = ref(database, 'sensor');
+                const snapshot = await get(sensorRef);
+
+                if (snapshot.exists()) {
+                    const data = snapshot.val();
+                    document.getElementById('temperature').value = data.temp !== undefined ? data.temp : '';
+                    document.getElementById('rainfall').value = data.rain !== undefined ? data.rain : '';
+                    // N, P, K, pH are not directly available from typical environmental sensors.
+                    // User will still need to input these manually.
+                    alert('Temperature and Rainfall data fetched from Firebase. Please manually enter Nitrogen, Phosphorus, Potassium, and pH values.');
+                } else {
+                    alert('No sensor data available in Firebase to fetch.');
+                }
+            } catch (error) {
+                document.getElementById('errorMessage').classList.remove('hidden');
+                document.getElementById('errorMessage').querySelector('span').textContent = 
+                    `Failed to fetch sensor data from Firebase: ${error.message}`;
             } finally {
                 document.getElementById('loadingSpinner').classList.add('hidden');
             }
