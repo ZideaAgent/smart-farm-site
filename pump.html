@@ -135,7 +135,7 @@
     <script type="module">
         // Import the functions you need from the SDKs you need
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.7.1/firebase-app.js";
-        import { getDatabase, ref, onValue, set, update, push } from "https://www.gstatic.com/firebasejs/11.7.1/firebase-database.js";
+        import { getDatabase, ref, onValue, set, update, push, child, remove } from "https://www.gstatic.com/firebasejs/11.7.1/firebase-database.js";
         import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.7.1/firebase-auth.js";
 
         // Your web app's Firebase configuration
@@ -180,6 +180,7 @@
         const scheduleList = document.getElementById('scheduleList');
 
         let pumpStartTime = null;
+        let currentPumpTimeout = null; // To store timeout ID for scheduled pump off
 
         // Function to update pump status
         function updatePumpStatus(status) {
@@ -199,14 +200,14 @@
                 // Pump turned OFF
                 if (pumpStartTime) {
                     const endTime = new Date().getTime();
-                    const durationMinutes = ((endTime - pumpStartTime) / (1000 * 60)).toFixed(1);
+                    const durationMinutes = ((endTime - pumpStartTime) / (1000 * 60)); // Calculate duration precisely
 
                     const pumpHistoryRef = ref(database, 'pumpHistory');
                     const newHistoryEntryRef = push(pumpHistoryRef); // Generate unique key
                     set(newHistoryEntryRef, {
                         startTime: pumpStartTime,
                         endTime: endTime,
-                        duration: parseFloat(durationMinutes),
+                        duration: parseFloat(durationMinutes.toFixed(1)), // Keep one decimal place
                         status: 'OFF'
                     });
                     pumpStartTime = null; // Reset start time
@@ -270,7 +271,10 @@
         onValue(pumpRef, (snapshot) => {
             const data = snapshot.val();
             if (data) {
-                updatePumpStatus(data.status);
+                // Only update visual status, actual control done by schedule/manual
+                pumpStatus.textContent = data.status ? 'Running' : 'Stopped';
+                pumpStatusIcon.style.color = data.status ? '#2ecc71' : '#e74c3c';
+                pumpToggle.checked = data.status;
                 updateLastRunTime(data.lastRun);
             }
         });
@@ -389,21 +393,39 @@
         function renderIrrigationSchedule(scheduleData) {
             scheduleList.innerHTML = '';
             if (scheduleData) {
-                const sortedSchedule = Object.values(scheduleData).sort((a, b) => a.scheduleTime.localeCompare(b.scheduleTime));
-                sortedSchedule.forEach((entry) => {
+                const sortedSchedule = Object.entries(scheduleData).sort(([, a], [, b]) => a.scheduleTime.localeCompare(b.scheduleTime));
+                sortedSchedule.forEach(([key, entry]) => {
                     const scheduleItem = document.createElement('div');
-                    scheduleItem.className = 'bg-white p-4 rounded-lg shadow-md mb-3 border border-gray-200';
+                    scheduleItem.className = 'bg-white p-4 rounded-lg shadow-md mb-3 border border-gray-200 flex items-center justify-between';
                     scheduleItem.innerHTML = `
-                        <div class="flex items-center justify-between mb-2">
-                            <span class="font-bold text-lg text-gray-800">Scheduled Task</span>
-                            <span class="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded-full">Active</span>
+                        <div>
+                            <span class="font-bold text-lg text-gray-800 flex items-center">
+                                <i class="fas fa-clock mr-2 text-indigo-500"></i> Scheduled for ${entry.scheduleTime}
+                            </span>
+                            <p class="text-sm text-gray-700 flex items-center mt-1">
+                                <i class="fas fa-hourglass-start mr-2 text-purple-500"></i> Duration: <span class="font-semibold">${entry.duration} min</span>
+                            </p>
                         </div>
-                        <div class="space-y-1">
-                            <p class="text-sm text-gray-700 flex items-center"><i class="fas fa-clock mr-2 text-indigo-500"></i> <strong>Time:</strong> ${entry.scheduleTime}</p>
-                            <p class="text-sm text-gray-700 flex items-center"><i class="fas fa-hourglass-start mr-2 text-purple-500"></i> <strong>Duration:</strong> <span class="font-semibold">${entry.duration} min</span></p>
-                        </div>
+                        <button class="btn btn-danger text-sm px-3 py-1" data-schedule-key="${key}">
+                            <i class="fas fa-trash-alt"></i> Delete
+                        </button>
                     `;
                     scheduleList.appendChild(scheduleItem);
+                });
+
+                // Add event listeners for delete buttons
+                document.querySelectorAll('[data-schedule-key]').forEach(button => {
+                    button.addEventListener('click', async (event) => {
+                        const scheduleKey = event.target.dataset.scheduleKey;
+                        if (confirm('Are you sure you want to delete this schedule?')) {
+                            try {
+                                await remove(child(ref(database, 'irrigationSchedule'), scheduleKey));
+                                alert('Schedule deleted successfully!');
+                            } catch (error) {
+                                alert(`Failed to delete schedule: ${error.message}`);
+                            }
+                        }
+                    });
                 });
             } else {
                 scheduleList.innerHTML = '<p class="text-gray-600 text-center py-4">No irrigation schedules set.</p>';
@@ -427,7 +449,7 @@
                     scheduleTime: scheduleTime,
                     duration: parseFloat(duration),
                     createdAt: new Date().getTime(),
-                    status: 'active'
+                    status: 'active' // Set initial status to active
                 });
                 alert('Irrigation schedule added successfully!');
                 // Clear inputs
@@ -438,12 +460,66 @@
             }
         });
 
-        // Listen for irrigation schedule updates
+        // Firebase reference for irrigation schedules
         const irrigationScheduleRef = ref(database, 'irrigationSchedule');
+
+        // Function to check and trigger schedules
+        async function checkSchedules() {
+            const now = new Date();
+            const currentHour = now.getHours();
+            const currentMinute = now.getMinutes();
+            const currentDay = now.getDate();
+
+            try {
+                const snapshot = await get(irrigationScheduleRef);
+                if (snapshot.exists()) {
+                    const schedules = snapshot.val();
+                    for (const key in schedules) {
+                        const schedule = schedules[key];
+                        if (schedule.status === 'active') {
+                            const [scheduleHour, scheduleMinute] = schedule.scheduleTime.split(':').map(Number);
+
+                            // Check if current time matches scheduled time
+                            if (currentHour === scheduleHour && currentMinute === scheduleMinute) {
+                                // Prevent re-triggering for the same minute
+                                if (schedule.lastTriggeredDay !== currentDay) { // Check if already triggered today
+                                    console.log(`Triggering pump for schedule at ${schedule.scheduleTime} for ${schedule.duration} minutes.`);
+                                    // Trigger pump ON
+                                    updatePumpStatus(true);
+
+                                    // Update schedule status in Firebase to 'triggered' and record last triggered day
+                                    await update(child(irrigationScheduleRef, key), {
+                                        status: 'triggered',
+                                        lastTriggeredDay: currentDay
+                                    });
+
+                                    // Schedule pump OFF after duration
+                                    if (currentPumpTimeout) clearTimeout(currentPumpTimeout);
+                                    currentPumpTimeout = setTimeout(async () => {
+                                        console.log(`Stopping pump for schedule at ${schedule.scheduleTime}.`);
+                                        updatePumpStatus(false);
+                                        await update(child(irrigationScheduleRef, key), { status: 'completed' }); // Optional: mark as completed
+                                        currentPumpTimeout = null;
+                                    }, schedule.duration * 60 * 1000); // Duration in milliseconds
+                                }
+                            }
+                        }
+                    }
+                }
+            } catch (error) {
+                console.error("Error checking schedules:", error);
+            }
+        }
+
+        // Listen for irrigation schedule updates and re-render
         onValue(irrigationScheduleRef, (snapshot) => {
             const data = snapshot.val();
             renderIrrigationSchedule(data);
+            checkSchedules(); // Also check schedules when data changes
         });
+
+        // Periodically check schedules every minute
+        setInterval(checkSchedules, 60 * 1000);
 
         // Enable history section elements (remove future work labels if still present)
         const historySectionH2Span = document.querySelector('.history-section h2 span');

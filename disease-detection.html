@@ -251,13 +251,13 @@
                 formData.append('file', blob, 'image.jpg');
 
                 // Send to API
-                const apiResponse = await fetch('https://plant-disease-model-415814.oa.r.appspot.com/predict', {
+                const apiResponse = await fetch('https://crop-recommender-h2cnb6bueee4gsh3.uaenorth-01.azurewebsites.net/disease/predict', {
                     method: 'POST',
                     body: formData
                 });
 
                 if (!apiResponse.ok) {
-                    throw new Error('Failed to analyze image');
+                    throw new Error(apiResponse.statusText);
                 }
 
                 const data = await apiResponse.json();
