@@ -151,7 +151,7 @@
             };
 
             try {
-                const response = await fetch('https://crop-recommender-h2cnb6b6ueee4gsh3.uaenorth-01.azurewebsites.net/predict_crop', {
+                const response = await fetch('https://crop-recommender-h2cnb6bueee4gsh3.uaenorth-01.azurewebsites.net/predict_crop', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
@@ -189,8 +189,24 @@
                 document.getElementById('resultsSection').classList.remove('hidden');
             } catch (error) {
                 document.getElementById('errorMessage').classList.remove('hidden');
-                document.getElementById('errorMessage').querySelector('span').textContent = 
-                    'Failed to get crop predictions. Please try again.';
+                let errorMessageText = 'Failed to get crop predictions. Please try again.';
+                if (error.response && error.response.json) {
+                    try {
+                        const errorData = await error.response.json();
+                        if (errorData.detail) {
+                            errorMessageText = `API Error: ${errorData.detail}`;
+                        } else if (errorData.message) {
+                            errorMessageText = `API Error: ${errorData.message}`;
+                        } else {
+                            errorMessageText = `API Error: ${JSON.stringify(errorData)}`;
+                        }
+                    } catch (jsonError) {
+                        errorMessageText = `Network Error: ${error.message}`;
+                    }
+                } else {
+                    errorMessageText = `Network Error: ${error.message}`;
+                }
+                document.getElementById('errorMessage').querySelector('span').textContent = errorMessageText;
             } finally {
                 document.getElementById('loadingSpinner').classList.add('hidden');
             }
