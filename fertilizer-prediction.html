@@ -150,7 +150,6 @@
         </div>
     </div>
 
-<<<<<<< HEAD
     <footer class="footer">
         <div class="footer-content">
             <div class="footer-brand">
@@ -192,8 +191,6 @@
         </div>
     </footer>
 
-=======
->>>>>>> be6ddbdad2d21b7f0e420c74113b30ffd88fa017
     <script type="module">
         // Import the functions you need from the SDKs you need
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.7.1/firebase-app.js";
@@ -244,12 +241,13 @@
             }
         }
 
-<<<<<<< HEAD
-=======
         // Fetch sensor data from Firebase
         async function fetchSensorData() {
             try {
-                const sensorRef = ref(database, 'sensors');
+                document.getElementById('loadingSpinner').classList.remove('hidden');
+                document.getElementById('errorMessage').classList.add('hidden');
+
+                const sensorRef = ref(database, 'sensors'); // Assuming 'sensors' is the correct path
                 const snapshot = await get(sensorRef);
                 
                 if (snapshot.exists()) {
@@ -258,18 +256,21 @@
                     document.getElementById('phosphorus').value = data.phosphorus || '';
                     document.getElementById('potassium').value = data.potassium || '';
                     document.getElementById('ph').value = data.ph || '';
-                    document.getElementById('rainfall').value = data.rainfall || '';
-                    document.getElementById('temperature').value = data.temperature || '';
+                    document.getElementById('rainfall').value = data.rain !== undefined ? data.rain : ''; // Using data.rain as per previous understanding
+                    document.getElementById('temperature').value = data.temp !== undefined ? data.temp : ''; // Using data.temp as per previous understanding
+                } else {
+                    alert('No sensor data available in Firebase to fetch.');
                 }
             } catch (error) {
                 console.error('Error fetching sensor data:', error);
                 document.getElementById('errorMessage').classList.remove('hidden');
                 document.getElementById('errorMessage').querySelector('span').textContent = 
                     'Failed to fetch sensor data. Please try again.';
+            } finally {
+                document.getElementById('loadingSpinner').classList.add('hidden');
             }
         }
 
->>>>>>> be6ddbdad2d21b7f0e420c74113b30ffd88fa017
         // Initialize the page
         populateCropDropdown();
 
@@ -282,7 +283,6 @@
             document.getElementById('errorMessage').classList.add('hidden');
 
             const formData = {
-<<<<<<< HEAD
                 "Nitrogen": parseFloat(document.getElementById('nitrogen').value),
                 "Phosphorus": parseFloat(document.getElementById('phosphorus').value),
                 "Potassium": parseFloat(document.getElementById('potassium').value),
@@ -294,21 +294,6 @@
 
             try {
                 const response = await fetch('https://fertilizer-bggud3eeegdtathx.uaenorth-01.azurewebsites.net/predict_fertilizer', {
-=======
-                nitrogen: parseFloat(document.getElementById('nitrogen').value),
-                phosphorus: parseFloat(document.getElementById('phosphorus').value),
-                potassium: parseFloat(document.getElementById('potassium').value),
-                ph: parseFloat(document.getElementById('ph').value),
-                rainfall: parseFloat(document.getElementById('rainfall').value),
-                temperature: parseFloat(document.getElementById('temperature').value),
-                crop: document.getElementById('crop').value
-            };
-
-            try {
-                // Here you would make an API call to your fertilizer prediction endpoint
-                // For now, we'll simulate a response
-                const response = await fetch('YOUR_API_ENDPOINT/fertilizer-prediction', {
->>>>>>> be6ddbdad2d21b7f0e420c74113b30ffd88fa017
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -355,38 +340,7 @@
             }
         });
 
-<<<<<<< HEAD
-        const fetchFirebaseDataBtn = document.getElementById('fetchFirebaseDataBtn');
-        fetchFirebaseDataBtn.addEventListener('click', async () => {
-            try {
-                // Show loading spinner
-                document.getElementById('loadingSpinner').classList.remove('hidden');
-                document.getElementById('errorMessage').classList.add('hidden');
-
-                const sensorRef = ref(database, 'sensor');
-                const snapshot = await get(sensorRef);
-
-                if (snapshot.exists()) {
-                    const data = snapshot.val();
-                    document.getElementById('temperature').value = data.temp !== undefined ? data.temp : '';
-                    document.getElementById('rainfall').value = data.rain !== undefined ? data.rain : '';
-                    // N, P, K, pH are not directly available from typical environmental sensors.
-                    // User will still need to input these manually.
-                    alert('Temperature and Rainfall data fetched from Firebase. Please manually enter Nitrogen, Phosphorus, Potassium, and pH values.');
-                } else {
-                    alert('No sensor data available in Firebase to fetch.');
-                }
-            } catch (error) {
-                document.getElementById('errorMessage').classList.remove('hidden');
-                document.getElementById('errorMessage').querySelector('span').textContent = 
-                    `Failed to fetch sensor data from Firebase: ${error.message}`;
-            } finally {
-                document.getElementById('loadingSpinner').classList.add('hidden');
-            }
-        });
-=======
         document.getElementById('fetchFirebaseDataBtn').addEventListener('click', fetchSensorData);
->>>>>>> be6ddbdad2d21b7f0e420c74113b30ffd88fa017
 
         // Add event listeners for fertilizer selection
         document.addEventListener('click', async (event) => {
