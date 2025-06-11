@@ -247,17 +247,17 @@
                 document.getElementById('loadingSpinner').classList.remove('hidden');
                 document.getElementById('errorMessage').classList.add('hidden');
 
-                const sensorRef = ref(database, 'sensors'); // Assuming 'sensors' is the correct path
+                const sensorRef = ref(database, 'sensor'); // Changed from 'sensors' to 'sensor'
                 const snapshot = await get(sensorRef);
                 
                 if (snapshot.exists()) {
                     const data = snapshot.val();
-                    document.getElementById('nitrogen').value = data.nitrogen || '';
-                    document.getElementById('phosphorus').value = data.phosphorus || '';
-                    document.getElementById('potassium').value = data.potassium || '';
-                    document.getElementById('ph').value = data.ph || '';
-                    document.getElementById('rainfall').value = data.rain !== undefined ? data.rain : ''; // Using data.rain as per previous understanding
-                    document.getElementById('temperature').value = data.temp !== undefined ? data.temp : ''; // Using data.temp as per previous understanding
+                    // Map the sensor data to the form fields
+                    document.getElementById('temperature').value = data.temp !== undefined ? data.temp : '';
+                    document.getElementById('rainfall').value = data.rain !== undefined ? data.rain : '';
+                    // Note: nitrogen, phosphorus, potassium, and pH are not available in the sensor data
+                    // These will need to be entered manually
+                    alert('Temperature and Rainfall data fetched from Firebase. Please manually enter Nitrogen, Phosphorus, Potassium, and pH values.');
                 } else {
                     alert('No sensor data available in Firebase to fetch.');
                 }
