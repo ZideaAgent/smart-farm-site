@@ -150,6 +150,7 @@
         </div>
     </div>
 
+<<<<<<< HEAD
     <footer class="footer">
         <div class="footer-content">
             <div class="footer-brand">
@@ -191,6 +192,8 @@
         </div>
     </footer>
 
+=======
+>>>>>>> be6ddbdad2d21b7f0e420c74113b30ffd88fa017
     <script type="module">
         // Import the functions you need from the SDKs you need
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.7.1/firebase-app.js";
@@ -241,6 +244,32 @@
             }
         }
 
+<<<<<<< HEAD
+=======
+        // Fetch sensor data from Firebase
+        async function fetchSensorData() {
+            try {
+                const sensorRef = ref(database, 'sensors');
+                const snapshot = await get(sensorRef);
+                
+                if (snapshot.exists()) {
+                    const data = snapshot.val();
+                    document.getElementById('nitrogen').value = data.nitrogen || '';
+                    document.getElementById('phosphorus').value = data.phosphorus || '';
+                    document.getElementById('potassium').value = data.potassium || '';
+                    document.getElementById('ph').value = data.ph || '';
+                    document.getElementById('rainfall').value = data.rainfall || '';
+                    document.getElementById('temperature').value = data.temperature || '';
+                }
+            } catch (error) {
+                console.error('Error fetching sensor data:', error);
+                document.getElementById('errorMessage').classList.remove('hidden');
+                document.getElementById('errorMessage').querySelector('span').textContent = 
+                    'Failed to fetch sensor data. Please try again.';
+            }
+        }
+
+>>>>>>> be6ddbdad2d21b7f0e420c74113b30ffd88fa017
         // Initialize the page
         populateCropDropdown();
 
@@ -253,6 +282,7 @@
             document.getElementById('errorMessage').classList.add('hidden');
 
             const formData = {
+<<<<<<< HEAD
                 "Nitrogen": parseFloat(document.getElementById('nitrogen').value),
                 "Phosphorus": parseFloat(document.getElementById('phosphorus').value),
                 "Potassium": parseFloat(document.getElementById('potassium').value),
@@ -264,6 +294,21 @@
 
             try {
                 const response = await fetch('https://fertilizer-bggud3eeegdtathx.uaenorth-01.azurewebsites.net/predict_fertilizer', {
+=======
+                nitrogen: parseFloat(document.getElementById('nitrogen').value),
+                phosphorus: parseFloat(document.getElementById('phosphorus').value),
+                potassium: parseFloat(document.getElementById('potassium').value),
+                ph: parseFloat(document.getElementById('ph').value),
+                rainfall: parseFloat(document.getElementById('rainfall').value),
+                temperature: parseFloat(document.getElementById('temperature').value),
+                crop: document.getElementById('crop').value
+            };
+
+            try {
+                // Here you would make an API call to your fertilizer prediction endpoint
+                // For now, we'll simulate a response
+                const response = await fetch('YOUR_API_ENDPOINT/fertilizer-prediction', {
+>>>>>>> be6ddbdad2d21b7f0e420c74113b30ffd88fa017
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -310,6 +355,7 @@
             }
         });
 
+<<<<<<< HEAD
         const fetchFirebaseDataBtn = document.getElementById('fetchFirebaseDataBtn');
         fetchFirebaseDataBtn.addEventListener('click', async () => {
             try {
@@ -338,6 +384,9 @@
                 document.getElementById('loadingSpinner').classList.add('hidden');
             }
         });
+=======
+        document.getElementById('fetchFirebaseDataBtn').addEventListener('click', fetchSensorData);
+>>>>>>> be6ddbdad2d21b7f0e420c74113b30ffd88fa017
 
         // Add event listeners for fertilizer selection
         document.addEventListener('click', async (event) => {
