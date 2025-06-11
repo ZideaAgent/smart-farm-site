@@ -208,15 +208,29 @@
                             parts: [{
                                 text: createFullPromptWithMemory(message)
                             }]
-                        }]
+                        }],
+                        generationConfig: {
+                            temperature: 0.7,
+                            topK: 40,
+                            topP: 0.95,
+                            maxOutputTokens: 1024,
+                        }
                     })
                 });
 
                 if (!response.ok) {
-                    throw new Error('API request failed');
+                    const errorData = await response.json();
+                    console.error('API Error:', errorData);
+                    throw new Error(errorData.error?.message || 'API request failed');
                 }
 
                 const data = await response.json();
+                console.log('API Response:', data);
+
+                if (!data.candidates || !data.candidates[0]?.content?.parts?.[0]?.text) {
+                    throw new Error('Invalid response format from API');
+                }
+
                 const botResponse = data.candidates[0].content.parts[0].text;
 
                 // Update chat history
@@ -227,7 +241,7 @@
                 addMessageToChat('bot', botResponse);
             } catch (error) {
                 console.error('Error:', error);
-                addMessageToChat('bot', 'Sorry, I encountered an error. Please try again.');
+                addMessageToChat('bot', `Sorry, I encountered an error: ${error.message}. Please try again.`);
             } finally {
                 // Hide typing indicator
                 document.getElementById('typingIndicator').style.display = 'none';
