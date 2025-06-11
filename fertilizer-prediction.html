@@ -311,54 +311,67 @@
                 const resultsContainer = document.getElementById('fertilizerResults');
                 resultsContainer.innerHTML = '';
 
-                data.forEach((fertilizer, index) => {
-                    const card = document.createElement('div');
-                    card.className = 'bg-white rounded-lg shadow-md p-6 transform transition-transform hover:scale-105';
-                    card.innerHTML = `
-                        <div class="flex items-center justify-between mb-4">
-                            <h3 class="text-xl font-semibold text-gray-800">${fertilizer.name}</h3>
-                            <span class="text-2xl font-bold text-green-500">${fertilizer.confidence}%</span>
-                        </div>
-                        <p class="text-gray-600 mb-4">${fertilizer.description}</p>
-                        <div class="w-full bg-gray-200 rounded-full h-2.5">
-                            <div class="bg-green-500 h-2.5 rounded-full" style="width: ${fertilizer.confidence}%"></div>
-                        </div>
-                        <button class="btn btn-secondary mt-4 w-full select-fertilizer-btn" data-fertilizer-name="${fertilizer.name}">
-                            Select This Fertilizer
-                        </button>
-                    `;
-                    resultsContainer.appendChild(card);
+                // Create a card for the recommended fertilizer
+                const card = document.createElement('div');
+                card.className = 'bg-white rounded-lg shadow-md p-6 transform transition-transform hover:scale-105';
+                card.innerHTML = `
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-xl font-semibold text-gray-800">Recommended Fertilizer</h3>
+                        <span class="text-2xl font-bold text-green-500">${data.fertilizer}</span>
+                    </div>
+                    <div class="w-full bg-gray-200 rounded-full h-2.5">
+                        <div class="bg-green-500 h-2.5 rounded-full" style="width: 100%"></div>
+                    </div>
+                    <button class="btn btn-secondary mt-4 w-full save-fertilizer-btn" data-fertilizer="${data.fertilizer}">
+                        Save to Firebase
+                    </button>
+                `;
+                resultsContainer.appendChild(card);
+
+                // Add event listener to save button
+                document.querySelector('.save-fertilizer-btn').addEventListener('click', async (event) => {
+                    const fertilizer = event.target.dataset.fertilizer;
+                    if (confirm(`Are you sure you want to save ${fertilizer} as the recommended fertilizer?`)) {
+                        try {
+                            const fertilizerRef = ref(database, 'control/fertilizer');
+                            await set(fertilizerRef, fertilizer);
+                            alert(`${fertilizer} has been successfully saved to Firebase!`);
+                        } catch (error) {
+                            document.getElementById('errorMessage').classList.remove('hidden');
+                            document.getElementById('errorMessage').querySelector('span').textContent = 
+                                `Failed to save fertilizer to Firebase: ${error.message}`;
+                        }
+                    }
                 });
 
                 document.getElementById('resultsSection').classList.remove('hidden');
             } catch (error) {
                 document.getElementById('errorMessage').classList.remove('hidden');
-                document.getElementById('errorMessage').querySelector('span').textContent = 
-                    'Failed to get fertilizer recommendations. Please try again.';
+                let errorMessageText = 'Failed to get fertilizer recommendations. Please try again.';
+                if (error.response && error.response.json) {
+                    try {
+                        const errorData = await error.response.json();
+                        if (errorData.detail) {
+                            errorMessageText = `API Error: ${errorData.detail}`;
+                        } else if (errorData.message) {
+                            errorMessageText = `API Error: ${errorData.message}`;
+                        } else {
+                            errorMessageText = `API Error: ${JSON.stringify(errorData)}`;
+                        }
+                    } catch (jsonError) {
+                        errorMessageText = `Network Error: ${error.message}`;
+                    }
+                } else {
+                    errorMessageText = `Network Error: ${error.message}`;
+                }
+                document.getElementById('errorMessage').querySelector('span').textContent = errorMessageText;
             } finally {
                 document.getElementById('loadingSpinner').classList.add('hidden');
             }
         });
 
+        // Add event listener for fetch sensor data button
         document.getElementById('fetchFirebaseDataBtn').addEventListener('click', fetchSensorData);
-
-        // Add event listeners for fertilizer selection
-        document.addEventListener('click', async (event) => {
-            if (event.target.classList.contains('select-fertilizer-btn')) {
-                const fertilizerName = event.target.dataset.fertilizerName;
-                if (confirm(`Are you sure you want to select ${fertilizerName} as the recommended fertilizer?`)) {
-                    try {
-                        const fertilizerRef = ref(database, 'control/fertilizer');
-                        await set(fertilizerRef, fertilizerName);
-                        alert(`${fertilizerName} has been successfully selected as the recommended fertilizer in Firebase!`);
-                    } catch (error) {
-                        document.getElementById('errorMessage').classList.remove('hidden');
-                        document.getElementById('errorMessage').querySelector('span').textContent = 
-                            `Failed to save fertilizer to Firebase: ${error.message}`;
-                    }
-                }
-            }
-        });
     </script>
 </body>
 </html> 
