@@ -24,6 +24,7 @@
                 <a href="dashboard.html">Dashboard</a>
                 <a href="pump.html">Pump Control</a>
                 <a href="crop-prediction.html">Crop Prediction</a>
+                <a href="fertilizer-prediction.html">Fertilizer Prediction</a>
                 <a href="disease-detection.html">Disease Detection</a>
                 <a href="about.html" class="active">About Us</a>
             </div>
@@ -86,8 +87,6 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.7.1/firebase-app.js";
         import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.7.1/firebase-auth.js";
-
-        const auth = getAuth(app);
 
         const firebaseConfig = {
             apiKey: "AIzaSyDL2h9dxXjU-2a6lEwK-iR2AL76FHLGc88",

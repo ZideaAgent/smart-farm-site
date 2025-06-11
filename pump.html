@@ -22,6 +22,7 @@
                 <a href="dashboard.html">Dashboard</a>
                 <a href="pump.html">Pump Control</a>
                 <a href="crop-prediction.html">Crop Prediction</a>
+                <a href="fertilizer-prediction.html">Fertilizer Prediction</a>
                 <a href="disease-detection.html">Disease Detection</a>
                 <a href="about.html">About Us</a>
             </div>
@@ -432,7 +433,7 @@
                         </button>
                     `;
                     scheduleList.appendChild(scheduleItem);
-                });
+        });
 
                 // Add event listeners for delete buttons
                 document.querySelectorAll('[data-schedule-key]').forEach(button => {
@@ -478,7 +479,7 @@
                 scheduleDurationInput.value = '';
             } catch (error) {
                 alert(`Failed to add schedule: ${error.message}`);
-            }
+                }
         });
 
         // Firebase reference for irrigation schedules
