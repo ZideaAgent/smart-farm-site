@@ -140,7 +140,7 @@
             <!-- Results Section -->
             <div id="resultsSection" class="hidden max-w-4xl mx-auto">
                 <h2 class="text-2xl font-bold text-gray-800 mb-4">Recommended Fertilizers</h2>
-                <div id="fertilizerResults">
+                <div id="fertilizerResults" class="w-full">
                     <!-- Results will be dynamically inserted here -->
                 </div>
             </div>
@@ -344,7 +344,7 @@
 
                 // Create a card styled like the plant disease results
                 const card = document.createElement('div');
-                card.className = 'bg-white rounded-lg shadow-lg p-6';
+                card.className = 'bg-white rounded-lg shadow-lg p-6 w-full';
                 card.innerHTML = `
                     <h2 class="text-2xl font-bold text-gray-800 mb-4">Analysis Results</h2>
                     <div class="mb-8">
