@@ -304,6 +304,35 @@
                     }
                     let treatment = 'No specific treatment recommendations available.';
                     let prevention = 'No specific prevention tips available.';
+
+                    // Try to extract using labels if present
+                    const treatmentMatch = geminiText.match(/Treatment[^:]*:([^.\n]*)[.\n]?/i);
+                    const preventionMatch = geminiText.match(/Prevention[^:]*:([^.\n]*)[.\n]?/i);
+                    if (treatmentMatch && treatmentMatch[1]) {
+                        treatment = treatmentMatch[1].trim() + '.';
+                    }
+                    if (preventionMatch && preventionMatch[1]) {
+                        prevention = preventionMatch[1].trim() + '.';
+                    }
+
+                    // If not found, try splitting by newlines
+                    if (treatment === 'No specific treatment recommendations available.' || prevention === 'No specific prevention tips available.') {
+                        const lines = geminiText.split('\n').filter(l => l.trim() !== '');
+                        if (lines.length >= 2) {
+                            treatment = lines[0].trim();
+                            prevention = lines[1].trim();
+                        } else if (lines.length === 1) {
+                            // Try splitting by period if only one line
+                            const sentences = lines[0].split('.').map(s => s.trim()).filter(Boolean);
+                            if (sentences.length >= 2) {
+                                treatment = sentences[0] + '.';
+                                prevention = sentences[1] + (sentences[1].endsWith('.') ? '' : '.');
+                            } else {
+                                treatment = lines[0].trim();
+                            }
+                        }
+                    }
+                    document.getElementById('treatmentText').textContent = treatment;
                     // Try to split the Gemini response into two lines (treatment, prevention)
                     const lines = geminiText.split('\n').filter(l => l.trim() !== '');
                     if (lines.length >= 2) {
