@@ -280,7 +280,7 @@
                 otherPredictions.appendChild(preventionDiv);
 
                 // Call Gemini API for recommendations
-                const geminiPrompt = `أنت خبير في أمراض النبات. بناءً على المرض التالي: '${data.predicted_class}', أعطِ إجابة قصيرة جدًا باللغة العربية فقط، بدون أي رموز أو تنسيقات خاصة، حول:\n1. أفضل علاج عملي وآمن للمزارعين.\n2. أفضل نصيحة للوقاية من هذا المرض مستقبلاً.\nأجب فقط بجملتين منفصلتين: الأولى للعلاج والثانية للوقاية، بدون أي رموز أو علامات ترقيم خاصة أو تنسيقات.`;
+                const geminiPrompt = `You are an expert plant pathologist. Given the plant disease: '${data.predicted_class}', provide:\n1. The best treatment recommendation (practical and safe for farmers).\n2. The best prevention tip (how to avoid this disease in the future).\nAnswer in English, not too long and not too short, as two separate sentences: the first for treatment, the second for prevention.`;
                 try {
                     const geminiResponse = await fetch('https://generativelanguage.googleapis.com/v1/models/gemini-2.0-flash:generateContent?key=AIzaSyCwWUf8HN6IUOjr1v0yzGJQ6hPsL3U3tLY', {
                         method: 'POST',
@@ -302,21 +302,21 @@
                     if (geminiData.candidates && geminiData.candidates[0]?.content?.parts?.[0]?.text) {
                         geminiText = geminiData.candidates[0].content.parts[0].text;
                     }
-                    let treatment = 'لا توجد توصيات علاجية محددة.';
-                    let prevention = 'لا توجد نصائح وقائية محددة.';
+                    let treatment = 'No specific treatment recommendations available.';
+                    let prevention = 'No specific prevention tips available.';
                     // Try to split the Gemini response into two lines (treatment, prevention)
                     const lines = geminiText.split('\n').filter(l => l.trim() !== '');
                     if (lines.length >= 2) {
-                        treatment = lines[0].replace(/[^\u0600-\u06FFa-zA-Z0-9\s]/g, '').trim();
-                        prevention = lines[1].replace(/[^\u0600-\u06FFa-zA-Z0-9\s]/g, '').trim();
+                        treatment = lines[0].trim();
+                        prevention = lines[1].trim();
                     } else if (lines.length === 1) {
-                        treatment = lines[0].replace(/[^\u0600-\u06FFa-zA-Z0-9\s]/g, '').trim();
+                        treatment = lines[0].trim();
                     }
                     document.getElementById('treatmentText').textContent = treatment;
                     document.getElementById('preventionText').textContent = prevention;
                 } catch (e) {
-                    document.getElementById('treatmentText').textContent = 'لا توجد توصيات علاجية محددة.';
-                    document.getElementById('preventionText').textContent = 'لا توجد نصائح وقائية محددة.';
+                    document.getElementById('treatmentText').textContent = 'No specific treatment recommendations available.';
+                    document.getElementById('preventionText').textContent = 'No specific prevention tips available.';
                 }
 
                 resultsSection.classList.remove('hidden');
