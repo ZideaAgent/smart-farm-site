@@ -86,51 +86,35 @@
         </div>
     </nav>
 
-    <div class="hero-section">
-        <div class="hero-content">
-            <h1>Smart Farm Assistant</h1>
-            <p>Get instant answers to your farming questions with our AI-powered chatbot. From crop advice to technical support, we're here to help.</p>
-            <div class="hero-buttons">
-                <a href="#chat-interface" class="btn btn-primary">Start Chat</a>
-                <a href="dashboard.html" class="btn btn-outline">View Dashboard</a>
-            </div>
-        </div>
-        <div class="hero-image">
-            <img src="https://images.unsplash.com/photo-1625246333195-78d9c38ad449?ixlib=rb-4.0.3" alt="Smart Farm Assistant">
-        </div>
-    </div>
+    <div class="container mx-auto px-4 py-8">
+        <div class="max-w-4xl mx-auto">
+            <h1 class="text-3xl font-bold text-gray-800 mb-8 flex items-center">
+                <i class="fas fa-robot text-green-500 mr-3"></i>
+                Agriculture Expert Chatbot
+            </h1>
 
-    <div id="chat-interface" class="main-content">
-        <div class="container mx-auto px-4 py-8">
-            <div class="max-w-4xl mx-auto">
-                <h1 class="text-3xl font-bold text-gray-800 mb-8 flex items-center">
-                    <i class="fas fa-robot text-green-500 mr-3"></i>
-                    Agriculture Expert Chatbot
-                </h1>
-
-                <div class="bg-white rounded-lg shadow-lg p-6">
-                    <div class="chat-container mb-4" id="chatContainer">
-                        <div class="message bot-message">
-                            Hello! I'm your agriculture expert assistant. Ask me anything about farming, crops, soil, or sustainable agriculture practices. I can respond in both English and Arabic.
-                        </div>
+            <div class="bg-white rounded-lg shadow-lg p-6">
+                <div class="chat-container mb-4" id="chatContainer">
+                    <div class="message bot-message">
+                        Hello! I'm your agriculture expert assistant. Ask me anything about farming, crops, soil, or sustainable agriculture practices. I can respond in both English and Arabic.
                     </div>
-
-                    <div class="typing-indicator" id="typingIndicator">
-                        <span></span>
-                        <span></span>
-                        <span></span>
-                    </div>
-
-                    <form id="chatForm" class="flex gap-2">
-                        <input type="text" id="userInput" 
-                               class="flex-1 px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
-                               placeholder="Type your question here...">
-                        <button type="submit" class="btn btn-primary">
-                            <i class="fas fa-paper-plane mr-2"></i>
-                            Send
-                        </button>
-                    </form>
                 </div>
+
+                <div class="typing-indicator" id="typingIndicator">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+
+                <form id="chatForm" class="flex gap-2">
+                    <input type="text" id="userInput" 
+                           class="flex-1 px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+                           placeholder="Type your question here...">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-paper-plane mr-2"></i>
+                        Send
+                    </button>
+                </form>
             </div>
         </div>
     </div>
