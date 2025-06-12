@@ -346,7 +346,7 @@
                 const card = document.createElement('div');
                 card.className = 'bg-white rounded-lg shadow-lg p-6';
                 card.innerHTML = `
-                    <h2 class="text-2xl font-bold text-gray-800 mb-4">Fertilizer Recommendation Results</h2>
+                    <h2 class="text-2xl font-bold text-gray-800 mb-4">Analysis Results</h2>
                     <div class="mb-8">
                         <div class="flex items-center justify-between mb-2">
                             <h3 class="text-xl font-semibold text-gray-800">Primary Recommendation</h3>
@@ -360,9 +360,6 @@
                     <div id="fertilizerDetails" class="mt-4 p-4 bg-blue-50 rounded-lg text-gray-700">
                         <span>Loading usage guide...</span>
                     </div>
-                    <button class="btn btn-secondary mt-4 w-full save-fertilizer-btn" data-fertilizer="${data.fertilizer}">
-                        Save to Firebase
-                    </button>
                 `;
                 resultsContainer.appendChild(card);
 
@@ -393,22 +390,6 @@
                 } catch (e) {
                     document.getElementById('fertilizerDetails').innerHTML = 'No usage guide available.';
                 }
-
-                // Add event listener to save button
-                document.querySelector('.save-fertilizer-btn').addEventListener('click', async (event) => {
-                    const fertilizer = event.target.dataset.fertilizer;
-                    if (confirm(`Are you sure you want to save ${fertilizer} as the recommended fertilizer?`)) {
-                        try {
-                            const fertilizerRef = ref(database, 'control/fertilizer');
-                            await set(fertilizerRef, fertilizer);
-                            alert(`${fertilizer} has been successfully saved to Firebase!`);
-                        } catch (error) {
-                            document.getElementById('errorMessage').classList.remove('hidden');
-                            document.getElementById('errorMessage').querySelector('span').textContent = 
-                                `Failed to save fertilizer to Firebase: ${error.message}`;
-                        }
-                    }
-                });
 
                 document.getElementById('resultsSection').classList.remove('hidden');
             } catch (error) {
