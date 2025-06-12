@@ -280,10 +280,7 @@
                 otherPredictions.appendChild(preventionDiv);
 
                 // Call Gemini API for recommendations
-                const geminiPrompt = `You are an expert plant pathologist. Given the plant disease: '${data.predicted_class}', provide:
-1. The best treatment recommendations (actionable, practical, and safe for farmers).
-2. The best prevention tips (how to avoid this disease in the future).
-Respond in this JSON format: { "treatment": "...", "prevention": "..." }`;
+                const geminiPrompt = `أنت خبير في أمراض النبات. بناءً على المرض التالي: '${data.predicted_class}', أعطِ إجابة قصيرة جدًا باللغة العربية فقط، بدون أي رموز أو تنسيقات خاصة، حول:\n1. أفضل علاج عملي وآمن للمزارعين.\n2. أفضل نصيحة للوقاية من هذا المرض مستقبلاً.\nأجب فقط بجملتين منفصلتين: الأولى للعلاج والثانية للوقاية، بدون أي رموز أو علامات ترقيم خاصة أو تنسيقات.`;
                 try {
                     const geminiResponse = await fetch('https://generativelanguage.googleapis.com/v1/models/gemini-2.0-flash:generateContent?key=AIzaSyCwWUf8HN6IUOjr1v0yzGJQ6hPsL3U3tLY', {
                         method: 'POST',
@@ -296,7 +293,7 @@ Respond in this JSON format: { "treatment": "...", "prevention": "..." }`;
                                 temperature: 0.7,
                                 topK: 40,
                                 topP: 0.95,
-                                maxOutputTokens: 512,
+                                maxOutputTokens: 256,
                             }
                         })
                     });
@@ -305,25 +302,21 @@ Respond in this JSON format: { "treatment": "...", "prevention": "..." }`;
                     if (geminiData.candidates && geminiData.candidates[0]?.content?.parts?.[0]?.text) {
                         geminiText = geminiData.candidates[0].content.parts[0].text;
                     }
-                    let treatment = 'No specific treatment recommendations available.';
-                    let prevention = 'No specific prevention tips available.';
-                    try {
-                        const parsed = JSON.parse(geminiText);
-                        if (parsed.treatment) treatment = parsed.treatment;
-                        if (parsed.prevention) prevention = parsed.prevention;
-                    } catch (e) {
-                        // fallback: try to split by lines if not valid JSON
-                        const lines = geminiText.split('\n');
-                        lines.forEach(line => {
-                            if (line.toLowerCase().includes('treatment')) treatment = line.split(':').slice(1).join(':').trim();
-                            if (line.toLowerCase().includes('prevention')) prevention = line.split(':').slice(1).join(':').trim();
-                        });
+                    let treatment = 'لا توجد توصيات علاجية محددة.';
+                    let prevention = 'لا توجد نصائح وقائية محددة.';
+                    // Try to split the Gemini response into two lines (treatment, prevention)
+                    const lines = geminiText.split('\n').filter(l => l.trim() !== '');
+                    if (lines.length >= 2) {
+                        treatment = lines[0].replace(/[^\u0600-\u06FFa-zA-Z0-9\s]/g, '').trim();
+                        prevention = lines[1].replace(/[^\u0600-\u06FFa-zA-Z0-9\s]/g, '').trim();
+                    } else if (lines.length === 1) {
+                        treatment = lines[0].replace(/[^\u0600-\u06FFa-zA-Z0-9\s]/g, '').trim();
                     }
                     document.getElementById('treatmentText').textContent = treatment;
                     document.getElementById('preventionText').textContent = prevention;
                 } catch (e) {
-                    document.getElementById('treatmentText').textContent = 'No specific treatment recommendations available.';
-                    document.getElementById('preventionText').textContent = 'No specific prevention tips available.';
+                    document.getElementById('treatmentText').textContent = 'لا توجد توصيات علاجية محددة.';
+                    document.getElementById('preventionText').textContent = 'لا توجد نصائح وقائية محددة.';
                 }
 
                 resultsSection.classList.remove('hidden');
