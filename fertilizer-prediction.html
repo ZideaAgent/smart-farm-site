@@ -22,13 +22,22 @@
             <div class="nav-links">
                 <a href="index.html">Home</a>
                 <a href="dashboard.html">Dashboard</a>
-                <a href="pump.html">Pump Control</a>
-                <a href="crop-prediction.html">Crop Prediction</a>
-                <a href="fertilizer-prediction.html" class="active">Fertilizer Prediction</a>
-                <a href="disease-detection.html">Disease Detection</a>
-                <a href="chatbot.html">Chatbot</a>
-                <a href="about.html">About Us</a>
-                <a href="yield-prediction.html">Yield Prediction</a>
+                <a href="pump.html">Pump</a>
+                <div class="dropdown">
+                    <a href="#" class="dropdown-trigger">Predict</a>
+                    <div class="dropdown-content">
+                        <a href="crop-prediction.html">Crop</a>
+                        <a href="fertilizer-prediction.html" class="active">Fertilizer</a>
+                        <a href="yield-prediction.html">Yield</a>
+                    </div>
+                </div>
+                <a href="disease-detection.html">Disease</a>
+                <a href="chatbot.html">Chat</a>
+                <a href="about.html">About</a>
+            </div>
+            <div class="auth-controls">
+                <span id="greeting">Hello, Ziad</span>
+                <button id="logoutBtn" class="btn-logout">Logout</button>
             </div>
         </div>
     </nav>
