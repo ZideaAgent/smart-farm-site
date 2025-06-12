@@ -342,17 +342,21 @@
                 const resultsContainer = document.getElementById('fertilizerResults');
                 resultsContainer.innerHTML = '';
 
-                // Create a card for the recommended fertilizer
+                // Create a card styled like the plant disease results
                 const card = document.createElement('div');
-                card.className = 'bg-white rounded-lg shadow-md p-6 transform transition-transform hover:scale-105';
+                card.className = 'bg-white rounded-lg shadow-lg p-6';
                 card.innerHTML = `
-                    <div class="flex items-center justify-between mb-4">
-                        <h3 class="text-xl font-semibold text-gray-800">Recommended Fertilizer</h3>
-                        <span class="text-2xl font-bold text-green-500">${data.fertilizer}</span>
+                    <h2 class="text-2xl font-bold text-gray-800 mb-4">Fertilizer Recommendation Results</h2>
+                    <div class="mb-8">
+                        <div class="flex items-center justify-between mb-2">
+                            <h3 class="text-xl font-semibold text-gray-800">Primary Recommendation</h3>
+                            <span class="text-2xl font-bold text-green-500">${data.fertilizer}</span>
+                        </div>
+                        <div class="bg-gray-100 rounded-lg p-4">
+                            <p class="text-lg" id="fertilizerMain">${data.fertilizer}</p>
+                        </div>
                     </div>
-                    <div class="w-full bg-gray-200 rounded-full h-2.5 mb-4">
-                        <div class="bg-green-500 h-2.5 rounded-full" style="width: 100%"></div>
-                    </div>
+                    <h3 class="text-xl font-semibold text-gray-800 mb-4">Usage Guide</h3>
                     <div id="fertilizerDetails" class="mt-4 p-4 bg-blue-50 rounded-lg text-gray-700">
                         <span>Loading usage guide...</span>
                     </div>
