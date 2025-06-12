@@ -266,7 +266,7 @@
                 treatmentDiv.className = 'mt-4 p-4 bg-blue-50 rounded-lg';
                 treatmentDiv.innerHTML = `
                     <h3 class="text-lg font-semibold text-gray-800 mb-2">Treatment Recommendations</h3>
-                    <p class="text-gray-600">${data.treatment || 'No specific treatment recommendations available.'}</p>
+                    <p class="text-gray-600" id="treatmentText">Loading treatment recommendations...</p>
                 `;
                 otherPredictions.appendChild(treatmentDiv);
 
@@ -275,9 +275,56 @@
                 preventionDiv.className = 'mt-4 p-4 bg-green-50 rounded-lg';
                 preventionDiv.innerHTML = `
                     <h3 class="text-lg font-semibold text-gray-800 mb-2">Prevention Tips</h3>
-                    <p class="text-gray-600">${data.prevention || 'No specific prevention tips available.'}</p>
+                    <p class="text-gray-600" id="preventionText">Loading prevention tips...</p>
                 `;
                 otherPredictions.appendChild(preventionDiv);
+
+                // Call Gemini API for recommendations
+                const geminiPrompt = `You are an expert plant pathologist. Given the plant disease: '${data.predicted_class}', provide:
+1. The best treatment recommendations (actionable, practical, and safe for farmers).
+2. The best prevention tips (how to avoid this disease in the future).
+Respond in this JSON format: { "treatment": "...", "prevention": "..." }`;
+                try {
+                    const geminiResponse = await fetch('https://generativelanguage.googleapis.com/v1/models/gemini-2.0-flash:generateContent?key=AIzaSyCwWUf8HN6IUOjr1v0yzGJQ6hPsL3U3tLY', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            contents: [{ parts: [{ text: geminiPrompt }] }],
+                            generationConfig: {
+                                temperature: 0.7,
+                                topK: 40,
+                                topP: 0.95,
+                                maxOutputTokens: 512,
+                            }
+                        })
+                    });
+                    const geminiData = await geminiResponse.json();
+                    let geminiText = '';
+                    if (geminiData.candidates && geminiData.candidates[0]?.content?.parts?.[0]?.text) {
+                        geminiText = geminiData.candidates[0].content.parts[0].text;
+                    }
+                    let treatment = 'No specific treatment recommendations available.';
+                    let prevention = 'No specific prevention tips available.';
+                    try {
+                        const parsed = JSON.parse(geminiText);
+                        if (parsed.treatment) treatment = parsed.treatment;
+                        if (parsed.prevention) prevention = parsed.prevention;
+                    } catch (e) {
+                        // fallback: try to split by lines if not valid JSON
+                        const lines = geminiText.split('\n');
+                        lines.forEach(line => {
+                            if (line.toLowerCase().includes('treatment')) treatment = line.split(':').slice(1).join(':').trim();
+                            if (line.toLowerCase().includes('prevention')) prevention = line.split(':').slice(1).join(':').trim();
+                        });
+                    }
+                    document.getElementById('treatmentText').textContent = treatment;
+                    document.getElementById('preventionText').textContent = prevention;
+                } catch (e) {
+                    document.getElementById('treatmentText').textContent = 'No specific treatment recommendations available.';
+                    document.getElementById('preventionText').textContent = 'No specific prevention tips available.';
+                }
 
                 resultsSection.classList.remove('hidden');
             } catch (error) {
