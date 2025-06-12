@@ -350,14 +350,45 @@
                         <h3 class="text-xl font-semibold text-gray-800">Recommended Fertilizer</h3>
                         <span class="text-2xl font-bold text-green-500">${data.fertilizer}</span>
                     </div>
-                    <div class="w-full bg-gray-200 rounded-full h-2.5">
+                    <div class="w-full bg-gray-200 rounded-full h-2.5 mb-4">
                         <div class="bg-green-500 h-2.5 rounded-full" style="width: 100%"></div>
+                    </div>
+                    <div id="fertilizerDetails" class="mt-4 p-4 bg-blue-50 rounded-lg text-gray-700">
+                        <span>Loading usage guide...</span>
                     </div>
                     <button class="btn btn-secondary mt-4 w-full save-fertilizer-btn" data-fertilizer="${data.fertilizer}">
                         Save to Firebase
                     </button>
                 `;
                 resultsContainer.appendChild(card);
+
+                // Fetch detailed usage guide from Gemini
+                const geminiPrompt = `You are an expert agronomist. Given the following details, provide a short, practical usage guide for the fertilizer recommendation.\nFertilizer: ${data.fertilizer}\nCrop: ${formData.Crop}\nSoil N: ${formData.Nitrogen}, P: ${formData.Phosphorus}, K: ${formData.Potassium}, pH: ${formData.pH}\nRainfall: ${formData.Rainfall} mm, Temperature: ${formData.Temperature}°C.\nInclude: 1. Application rate, 2. Best timing, 3. Safety tips.\nAnswer in 3-5 sentences, clear and practical for a farmer.`;
+                try {
+                    const geminiResponse = await fetch('https://generativelanguage.googleapis.com/v1/models/gemini-2.0-flash:generateContent?key=AIzaSyCwWUf8HN6IUOjr1v0yzGJQ6hPsL3U3tLY', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            contents: [{ parts: [{ text: geminiPrompt }] }],
+                            generationConfig: {
+                                temperature: 0.7,
+                                topK: 40,
+                                topP: 0.95,
+                                maxOutputTokens: 256,
+                            }
+                        })
+                    });
+                    const geminiData = await geminiResponse.json();
+                    let geminiText = '';
+                    if (geminiData.candidates && geminiData.candidates[0]?.content?.parts?.[0]?.text) {
+                        geminiText = geminiData.candidates[0].content.parts[0].text;
+                    }
+                    document.getElementById('fertilizerDetails').innerHTML = geminiText ? geminiText : 'No usage guide available.';
+                } catch (e) {
+                    document.getElementById('fertilizerDetails').innerHTML = 'No usage guide available.';
+                }
 
                 // Add event listener to save button
                 document.querySelector('.save-fertilizer-btn').addEventListener('click', async (event) => {
