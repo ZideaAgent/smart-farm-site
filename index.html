@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1
     <title>SmartFarm - Smart Irrigation System</title>
     <link rel="stylesheet" href="styles.css">
     <!-- Font Awesome -->
@@ -11,14 +11,14 @@
 <body>
     <nav class="navbar">
         <div class="nav-container">
-            <a href="home.html" class="nav-brand">
+            <a href="index.html" class="nav-brand">
                 <div class="logo">
                     <i class="fas fa-leaf"></i>
                     <span>SmartFarm</span>
                 </div>
             </a>
             <div class="nav-links">
-                <a href="home.html">Home</a>
+                <a href="index.html">Home</a>
                 <a href="dashboard.html">Dashboard</a>
                 <a href="pump.html">Pump Control</a>
                 <a href="crop-prediction.html">Crop Prediction</a>
@@ -185,7 +185,7 @@
                 logoutBtn.classList.add('hidden');
                 greetingSpan.textContent = '';
                 mainHeading.textContent = 'Smart Irrigation System';
-                window.location.href = 'index.html'; // Redirect to login page
+                window.location.href = 'landing.html'; // Redirect to login page
             }
         });
 
@@ -206,4 +206,22 @@
             background-color: #f8f9fa;
         }
 
-        .features-section h2 {
+        .features-section h2 {    @media (max-width: 768px) {
+            .footer-content {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+
+            .footer-bottom {
+                flex-direction: column;
+                gap: 1rem;
+                text-align: center;
+            }
+
+            .footer-links {
+                justify-content: center;
+            }
+        }
+    </style>
+</body>
+</html> 
