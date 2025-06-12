@@ -9,6 +9,58 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .tooltip {
+            position: relative;
+            display: inline-block;
+        }
+
+        .tooltip .tooltip-content {
+            visibility: hidden;
+            width: 250px;
+            background-color: #333;
+            color: #fff;
+            text-align: left;
+            border-radius: 6px;
+            padding: 10px;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%;
+            left: 50%;
+            transform: translateX(-50%);
+            opacity: 0;
+            transition: opacity 0.3s;
+            font-size: 0.875rem;
+            line-height: 1.4;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .tooltip .tooltip-content::after {
+            content: "";
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            margin-left: -5px;
+            border-width: 5px;
+            border-style: solid;
+            border-color: #333 transparent transparent transparent;
+        }
+
+        .tooltip:hover .tooltip-content {
+            visibility: visible;
+            opacity: 1;
+        }
+
+        .help-icon {
+            color: #6B7280;
+            cursor: help;
+            transition: color 0.2s;
+        }
+
+        .help-icon:hover {
+            color: #4B5563;
+        }
+    </style>
 </head>
 <body class="bg-gray-50">
     <nav class="navbar">
@@ -44,10 +96,27 @@
 
     <div class="container mx-auto px-4 py-8">
         <div class="max-w-4xl mx-auto">
-            <h1 class="text-3xl font-bold text-gray-800 mb-8 flex items-center">
-                <i class="fas fa-flask text-green-500 mr-3"></i>
-                Fertilizer Recommendation System
-            </h1>
+            <div class="flex justify-between items-center mb-8">
+                <h1 class="text-3xl font-bold text-gray-800 flex items-center">
+                    <i class="fas fa-seedling text-green-500 mr-3"></i>
+                    Fertilizer Prediction System
+                </h1>
+                <div class="tooltip">
+                    <i class="fas fa-question-circle text-xl help-icon"></i>
+                    <div class="tooltip-content">
+                        <strong>How to use this system:</strong><br>
+                        1. Enter your soil's NPK values<br>
+                        2. Input pH level and environmental data<br>
+                        3. Select your crop<br>
+                        4. Click "Get Recommendations"<br>
+                        <br>
+                        <strong>Tips:</strong><br>
+                        • Use the "Fetch Sensor Data" button to get real-time environmental data<br>
+                        • Check the info icons for valid ranges<br>
+                        • View your prediction history below
+                    </div>
+                </div>
+            </div>
 
             <div class="bg-white rounded-lg shadow-lg p-6 mb-8">
                 <form id="fertilizerPredictionForm" class="space-y-6">
@@ -56,7 +125,16 @@
                         <div class="form-group">
                             <label class="block text-sm font-medium text-gray-700 mb-2">
                                 Nitrogen (N)
-                                <i class="fas fa-info-circle text-gray-400 ml-1" title="Nitrogen content in soil (20-150 kg/ha)"></i>
+                                <div class="tooltip inline-block ml-1">
+                                    <i class="fas fa-info-circle help-icon"></i>
+                                    <div class="tooltip-content">
+                                        <strong>Nitrogen (N)</strong><br>
+                                        Essential for leaf growth and green color.<br>
+                                        • Range: 20-150 kg/ha<br>
+                                        • Low: Yellow leaves, stunted growth<br>
+                                        • High: Excessive foliage, delayed fruiting
+                                    </div>
+                                </div>
                             </label>
                             <input type="number" id="nitrogen" name="nitrogen" min="20" max="150" required
                                 class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500">
@@ -66,7 +144,16 @@
                         <div class="form-group">
                             <label class="block text-sm font-medium text-gray-700 mb-2">
                                 Phosphorus (P)
-                                <i class="fas fa-info-circle text-gray-400 ml-1" title="Phosphorus content in soil (10-90 kg/ha)"></i>
+                                <div class="tooltip inline-block ml-1">
+                                    <i class="fas fa-info-circle help-icon"></i>
+                                    <div class="tooltip-content">
+                                        <strong>Phosphorus (P)</strong><br>
+                                        Vital for root development and flowering.<br>
+                                        • Range: 10-90 kg/ha<br>
+                                        • Low: Poor root growth, delayed maturity<br>
+                                        • High: Reduced micronutrient availability
+                                    </div>
+                                </div>
                             </label>
                             <input type="number" id="phosphorus" name="phosphorus" min="10" max="90" required
                                 class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500">
@@ -76,7 +163,16 @@
                         <div class="form-group">
                             <label class="block text-sm font-medium text-gray-700 mb-2">
                                 Potassium (K)
-                                <i class="fas fa-info-circle text-gray-400 ml-1" title="Potassium content in soil (10-90 kg/ha)"></i>
+                                <div class="tooltip inline-block ml-1">
+                                    <i class="fas fa-info-circle help-icon"></i>
+                                    <div class="tooltip-content">
+                                        <strong>Potassium (K)</strong><br>
+                                        Important for fruit quality and disease resistance.<br>
+                                        • Range: 10-90 kg/ha<br>
+                                        • Low: Weak stems, poor fruit quality<br>
+                                        • High: Reduced calcium uptake
+                                    </div>
+                                </div>
                             </label>
                             <input type="number" id="potassium" name="potassium" min="10" max="90" required
                                 class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500">
@@ -86,7 +182,17 @@
                         <div class="form-group">
                             <label class="block text-sm font-medium text-gray-700 mb-2">
                                 pH Level
-                                <i class="fas fa-info-circle text-gray-400 ml-1" title="Soil pH level (3.5-10)"></i>
+                                <div class="tooltip inline-block ml-1">
+                                    <i class="fas fa-info-circle help-icon"></i>
+                                    <div class="tooltip-content">
+                                        <strong>Soil pH</strong><br>
+                                        Affects nutrient availability.<br>
+                                        • Range: 3.5-10<br>
+                                        • Acidic (< 6.0): Good for blueberries, potatoes<br>
+                                        • Neutral (6.0-7.5): Most crops<br>
+                                        • Alkaline (> 7.5): Good for asparagus, cabbage
+                                    </div>
+                                </div>
                             </label>
                             <input type="number" id="ph" name="ph" min="3.5" max="10" step="0.1" required
                                 class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500">
@@ -96,7 +202,16 @@
                         <div class="form-group">
                             <label class="block text-sm font-medium text-gray-700 mb-2">
                                 Rainfall (mm)
-                                <i class="fas fa-info-circle text-gray-400 ml-1" title="Annual rainfall in mm (20-300)"></i>
+                                <div class="tooltip inline-block ml-1">
+                                    <i class="fas fa-info-circle help-icon"></i>
+                                    <div class="tooltip-content">
+                                        <strong>Rainfall</strong><br>
+                                        Annual precipitation in millimeters.<br>
+                                        • Range: 20-300 mm<br>
+                                        • Affects nutrient leaching<br>
+                                        • Consider seasonal distribution
+                                    </div>
+                                </div>
                             </label>
                             <input type="number" id="rainfall" name="rainfall" min="20" max="300" required
                                 class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500">
@@ -106,7 +221,16 @@
                         <div class="form-group">
                             <label class="block text-sm font-medium text-gray-700 mb-2">
                                 Temperature (°C)
-                                <i class="fas fa-info-circle text-gray-400 ml-1" title="Temperature in Celsius (8-44)"></i>
+                                <div class="tooltip inline-block ml-1">
+                                    <i class="fas fa-info-circle help-icon"></i>
+                                    <div class="tooltip-content">
+                                        <strong>Temperature</strong><br>
+                                        Average temperature in Celsius.<br>
+                                        • Range: 8-44°C<br>
+                                        • Affects nutrient uptake<br>
+                                        • Consider seasonal variations
+                                    </div>
+                                </div>
                             </label>
                             <input type="number" id="temperature" name="temperature" min="8" max="44" step="0.1" required
                                 class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500">
@@ -116,7 +240,16 @@
                         <div class="form-group md:col-span-2 lg:col-span-3">
                             <label class="block text-sm font-medium text-gray-700 mb-2">
                                 Select Crop
-                                <i class="fas fa-info-circle text-gray-400 ml-1" title="Choose the crop you want to grow"></i>
+                                <div class="tooltip inline-block ml-1">
+                                    <i class="fas fa-info-circle help-icon"></i>
+                                    <div class="tooltip-content">
+                                        <strong>Crop Selection</strong><br>
+                                        Choose the crop you want to grow.<br>
+                                        • Different crops have different nutrient needs<br>
+                                        • Consider crop rotation<br>
+                                        • Check local growing conditions
+                                    </div>
+                                </div>
                             </label>
                             <select id="crop" name="crop" required
                                 class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500">
@@ -154,53 +287,28 @@
                 </div>
             </div>
 
+            <!-- History Section -->
+            <div id="historySection" class="mt-8">
+                <h2 class="text-2xl font-bold text-gray-800 mb-4">Prediction History</h2>
+                <div class="bg-white rounded-lg shadow-lg p-6">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="text-lg font-semibold text-gray-700">Recent Predictions</h3>
+                        <button id="clearHistoryBtn" class="text-sm text-red-500 hover:text-red-700">
+                            <i class="fas fa-trash-alt mr-1"></i>Clear History
+                        </button>
+                    </div>
+                    <div id="predictionHistory" class="space-y-4">
+                        <!-- History items will be dynamically inserted here -->
+                    </div>
+                </div>
+            </div>
+
             <!-- Error Message -->
             <div id="errorMessage" class="hidden bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mt-4" role="alert">
                 <span class="block sm:inline"></span>
             </div>
         </div>
     </div>
-
-    <footer class="footer">
-        <div class="footer-content">
-            <div class="footer-brand">
-                <div class="footer-logo">
-                    <i class="fas fa-leaf"></i>
-                    <span>SmartFarm</span>
-                </div>
-                <p class="footer-tagline">Revolutionizing agriculture with smart technology</p>
-                <div class="social-links">
-                    <a href="#" class="social-link"><i class="fab fa-facebook"></i></a>
-                    <a href="#" class="social-link"><i class="fab fa-twitter"></i></a>
-                    <a href="#" class="social-link"><i class="fab fa-linkedin"></i></a>
-                    <a href="#" class="social-link"><i class="fab fa-instagram"></i></a>
-                </div>
-            </div>
-            <div class="footer-contact">
-                <h3>Contact Us</h3>
-                <div class="contact-item">
-                    <i class="fas fa-envelope"></i>
-                    <a href="mailto:info@smartfarm.com">info@smartfarm.com</a>
-                </div>
-                <div class="contact-item">
-                    <i class="fas fa-phone"></i>
-                    <a href="tel:+1234567890">(123) 456-7890</a>
-                </div>
-                <div class="contact-item">
-                    <i class="fas fa-map-marker-alt"></i>
-                    <span>123 Smart Farm Street, Tech City, TC 12345</span>
-                </div>
-            </div>
-        </div>
-        <div class="footer-bottom">
-            <p>&copy; 2024 SmartFarm. All rights reserved.</p>
-            <div class="footer-links">
-                <a href="privacy-policy.html">Privacy Policy</a>
-                <a href="terms-of-service.html">Terms of Service</a>
-                <a href="cookie-policy.html">Cookie Policy</a>
-            </div>
-        </div>
-    </footer>
 
     <script type="module">
         // Import the functions you need from the SDKs you need
@@ -282,10 +390,145 @@
         // Initialize the page
         populateCropDropdown();
 
-        // Add event listeners
+        // Input validation function
+        function validateInput(input, min, max, step = 1) {
+            const value = parseFloat(input.value);
+            const errorElement = input.nextElementSibling;
+            
+            if (isNaN(value)) {
+                showError(input, 'Please enter a valid number');
+                return false;
+            }
+            
+            if (value < min || value > max) {
+                showError(input, `Value must be between ${min} and ${max}`);
+                return false;
+            }
+            
+            if (step !== 1 && (value % step) !== 0) {
+                showError(input, `Value must be in increments of ${step}`);
+                return false;
+            }
+            
+            hideError(input);
+            return true;
+        }
+
+        function showError(input, message) {
+            let errorElement = input.nextElementSibling;
+            if (!errorElement || !errorElement.classList.contains('error-message')) {
+                errorElement = document.createElement('div');
+                errorElement.className = 'error-message text-red-500 text-sm mt-1';
+                input.parentNode.insertBefore(errorElement, input.nextSibling);
+            }
+            errorElement.textContent = message;
+            input.classList.add('border-red-500');
+        }
+
+        function hideError(input) {
+            const errorElement = input.nextElementSibling;
+            if (errorElement && errorElement.classList.contains('error-message')) {
+                errorElement.remove();
+            }
+            input.classList.remove('border-red-500');
+        }
+
+        // Add real-time validation to all numeric inputs
+        const numericInputs = document.querySelectorAll('input[type="number"]');
+        numericInputs.forEach(input => {
+            input.addEventListener('input', () => {
+                const min = parseFloat(input.min);
+                const max = parseFloat(input.max);
+                const step = parseFloat(input.step) || 1;
+                validateInput(input, min, max, step);
+            });
+        });
+
+        // Add validation to crop selection
+        const cropSelect = document.getElementById('crop');
+        cropSelect.addEventListener('change', () => {
+            if (!cropSelect.value) {
+                showError(cropSelect, 'Please select a crop');
+            } else {
+                hideError(cropSelect);
+            }
+        });
+
+        // History management functions
+        function saveToHistory(prediction) {
+            let history = JSON.parse(localStorage.getItem('fertilizerHistory') || '[]');
+            history.unshift({
+                ...prediction,
+                timestamp: new Date().toISOString()
+            });
+            // Keep only last 10 predictions
+            history = history.slice(0, 10);
+            localStorage.setItem('fertilizerHistory', JSON.stringify(history));
+            updateHistoryDisplay();
+        }
+
+        function updateHistoryDisplay() {
+            const historyContainer = document.getElementById('predictionHistory');
+            const history = JSON.parse(localStorage.getItem('fertilizerHistory') || '[]');
+            
+            if (history.length === 0) {
+                historyContainer.innerHTML = '<p class="text-gray-500 text-center py-4">No prediction history available</p>';
+                return;
+            }
+
+            historyContainer.innerHTML = history.map(item => `
+                <div class="border-b border-gray-200 pb-4 last:border-0">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <h4 class="font-semibold text-gray-800">${item.Crop}</h4>
+                            <p class="text-sm text-gray-600">Recommended: ${item.fertilizer}</p>
+                            <div class="text-xs text-gray-500 mt-1">
+                                N: ${item.Nitrogen} | P: ${item.Phosphorus} | K: ${item.Potassium} | pH: ${item.pH}
+                            </div>
+                        </div>
+                        <div class="text-xs text-gray-500">
+                            ${new Date(item.timestamp).toLocaleString()}
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Clear history
+        document.getElementById('clearHistoryBtn').addEventListener('click', () => {
+            if (confirm('Are you sure you want to clear all prediction history?')) {
+                localStorage.removeItem('fertilizerHistory');
+                updateHistoryDisplay();
+            }
+        });
+
+        // Initialize history display
+        updateHistoryDisplay();
+
+        // Modify the form submission to save to history
         document.getElementById('fertilizerPredictionForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             
+            // Validate all inputs
+            let isValid = true;
+            numericInputs.forEach(input => {
+                const min = parseFloat(input.min);
+                const max = parseFloat(input.max);
+                const step = parseFloat(input.step) || 1;
+                if (!validateInput(input, min, max, step)) {
+                    isValid = false;
+                }
+            });
+
+            if (!cropSelect.value) {
+                showError(cropSelect, 'Please select a crop');
+                isValid = false;
+            }
+
+            if (!isValid) {
+                return;
+            }
+
             document.getElementById('loadingSpinner').classList.remove('hidden');
             document.getElementById('resultsSection').classList.add('hidden');
             document.getElementById('errorMessage').classList.add('hidden');
@@ -401,6 +644,12 @@
                 }
 
                 document.getElementById('resultsSection').classList.remove('hidden');
+
+                // After successful prediction, save to history
+                saveToHistory({
+                    ...formData,
+                    fertilizer: data.fertilizer
+                });
             } catch (error) {
                 document.getElementById('errorMessage').classList.remove('hidden');
                 let errorMessageText = 'Failed to get fertilizer recommendations. Please try again.';
