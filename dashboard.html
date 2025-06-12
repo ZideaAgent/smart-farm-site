@@ -34,59 +34,67 @@
     </nav>
 
     <div class="main-content">
-        <h1>Farm Dashboard</h1>
-        <div class="card-grid">
-            <div class="card">
-                <div class="card-icon">
-                    <i class="fas fa-temperature-high" id="tempIcon"></i>
+        <div class="card">
+            <!-- Dashboard header and summary content here -->
+        </div>
+        <div class="section-divider"></div>
+        <div class="card">
+            <h1>Farm Dashboard</h1>
+            <div class="card-grid">
+                <div class="card">
+                    <div class="card-icon">
+                        <i class="fas fa-temperature-high" id="tempIcon"></i>
+                    </div>
+                    <div class="sensor-label">Temperature</div>
+                    <div class="sensor-value" id="temperature">--°C</div>
                 </div>
-                <div class="sensor-label">Temperature</div>
-                <div class="sensor-value" id="temperature">--°C</div>
-            </div>
-            <div class="card">
-                <div class="card-icon">
-                    <i class="fas fa-droplet" id="humidityIcon"></i>
+                <div class="card">
+                    <div class="card-icon">
+                        <i class="fas fa-droplet" id="humidityIcon"></i>
+                    </div>
+                    <div class="sensor-label">Humidity</div>
+                    <div class="sensor-value" id="humidity">--%</div>
                 </div>
-                <div class="sensor-label">Humidity</div>
-                <div class="sensor-value" id="humidity">--%</div>
-            </div>
-            <div class="card">
-                <div class="card-icon">
-                    <i class="fas fa-seedling" id="soilIcon"></i>
+                <div class="card">
+                    <div class="card-icon">
+                        <i class="fas fa-seedling" id="soilIcon"></i>
+                    </div>
+                    <div class="sensor-label">Soil Moisture</div>
+                    <div class="sensor-value" id="soilMoisture">--%</div>
                 </div>
-                <div class="sensor-label">Soil Moisture</div>
-                <div class="sensor-value" id="soilMoisture">--%</div>
-            </div>
-            <div class="card">
-                <div class="card-icon">
-                    <i class="fas fa-cloud-rain" id="rainIcon"></i>
+                <div class="card">
+                    <div class="card-icon">
+                        <i class="fas fa-cloud-rain" id="rainIcon"></i>
+                    </div>
+                    <div class="sensor-label">Rain Level</div>
+                    <div class="sensor-value" id="rainLevel">--mm</div>
                 </div>
-                <div class="sensor-label">Rain Level</div>
-                <div class="sensor-value" id="rainLevel">--mm</div>
-            </div>
-            <div class="card" id="waterLevelCard">
-                <div class="card-icon">
-                    <i class="fas fa-water" id="waterIcon"></i>
+                <div class="card" id="waterLevelCard">
+                    <div class="card-icon">
+                        <i class="fas fa-water" id="waterIcon"></i>
+                    </div>
+                    <div class="sensor-label">Water Level</div>
+                    <div class="sensor-value" id="waterLevel">--%</div>
                 </div>
-                <div class="sensor-label">Water Level</div>
-                <div class="sensor-value" id="waterLevel">--%</div>
             </div>
         </div>
-
-        <div class="charts-section">
-            <h2>Sensor Data History</h2>
-            <div class="charts-grid">
-                <div class="chart-card">
-                    <h3>Temperature History</h3>
-                    <div id="temperatureChart"></div>
-                </div>
-                <div class="chart-card">
-                    <h3>Humidity History</h3>
-                    <div id="humidityChart"></div>
-                </div>
-                <div class="chart-card">
-                    <h3>Soil Moisture History</h3>
-                    <div id="soilChart"></div>
+        <div class="section-divider"></div>
+        <div class="card">
+            <div class="charts-section">
+                <h2>Sensor Data History</h2>
+                <div class="charts-grid">
+                    <div class="chart-card">
+                        <h3>Temperature History</h3>
+                        <div id="temperatureChart"></div>
+                    </div>
+                    <div class="chart-card">
+                        <h3>Humidity History</h3>
+                        <div id="humidityChart"></div>
+                    </div>
+                    <div class="chart-card">
+                        <h3>Soil Moisture History</h3>
+                        <div id="soilChart"></div>
+                    </div>
                 </div>
             </div>
         </div>

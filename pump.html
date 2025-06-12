@@ -32,104 +32,110 @@
     </nav>
 
     <div class="main-content">
-        <h1>Smart Pump Control</h1>
-        
-        <div class="pump-status-section">
-            <div class="status-card">
-                <div class="status-icon">
-                    <i class="fas fa-power-off" id="pumpStatusIcon"></i>
-                </div>
-                <div class="status-info">
-                    <h3>Pump Status</h3>
-                    <p id="pumpStatus">Checking...</p>
-                </div>
-            </div>
-            <div class="status-card">
-                <div class="status-icon">
-                    <i class="fas fa-clock" id="lastRunIcon"></i>
-                </div>
-                <div class="status-info">
-                    <h3>Last Run</h3>
-                    <p id="lastRunTime">--:--</p>
-                </div>
-            </div>
-            <div class="status-card">
-                <div class="status-icon">
-                    <i class="fas fa-tint" id="waterLevelIcon"></i>
-                </div>
-                <div class="status-info">
-                    <h3>Water Level</h3>
-                    <p id="waterLevel">--%</p>
-                </div>
-            </div>
-        </div>
-
-        <div class="control-section">
-            <div class="control-card manual-mode" id="manualControl">
-                <h2>Manual Control</h2>
-                <div class="control-options">
-                    <div class="control-group">
-                        <label class="toggle-switch">
-                            <input type="checkbox" id="pumpToggle">
-                            <span class="slider"></span>
-                        </label>
-                        <span class="control-label">Pump Power</span>
+        <div class="card">
+            <h1>Smart Pump Control</h1>
+            
+            <div class="pump-status-section">
+                <div class="status-card">
+                    <div class="status-icon">
+                        <i class="fas fa-power-off" id="pumpStatusIcon"></i>
                     </div>
-                    <div class="control-group">
-                        <label for="pumpDuration">Duration (minutes)</label>
-                        <input type="number" id="pumpDuration" min="1" max="60" value="5">
+                    <div class="status-info">
+                        <h3>Pump Status</h3>
+                        <p id="pumpStatus">Checking...</p>
                     </div>
-                    <button class="btn btn-primary" id="startPump">
-                        <i class="fas fa-play"></i> Start Pump
-                    </button>
                 </div>
-            </div>
-
-            <div class="control-card auto-mode">
-                <h2>Automatic Mode</h2>
-                <div class="control-options">
-                    <div class="control-group">
-                        <label class="toggle-switch">
-                            <input type="checkbox" id="autoModeToggle">
-                            <span class="slider"></span>
-                        </label>
-                        <span class="control-label">Enable Auto Mode</span>
+                <div class="status-card">
+                    <div class="status-icon">
+                        <i class="fas fa-clock" id="lastRunIcon"></i>
+                    </div>
+                    <div class="status-info">
+                        <h3>Last Run</h3>
+                        <p id="lastRunTime">--:--</p>
+                    </div>
+                </div>
+                <div class="status-card">
+                    <div class="status-icon">
+                        <i class="fas fa-tint" id="waterLevelIcon"></i>
+                    </div>
+                    <div class="status-info">
+                        <h3>Water Level</h3>
+                        <p id="waterLevel">--%</p>
                     </div>
                 </div>
             </div>
-        </div>
 
-        <div class="schedule-section">
-            <h2>Irrigation Schedule</h2>
-            <div class="schedule-card">
-                <div class="schedule-header">
-                    <h3>Today's Schedule</h3>
-                    <div class="flex space-x-4 mb-4">
-                        <input type="time" id="scheduleTime" class="p-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500 flex-grow">
-                        <input type="number" id="scheduleDuration" min="1" placeholder="Duration (min)" class="p-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500 w-32">
+            <div class="control-section">
+                <div class="control-card manual-mode" id="manualControl">
+                    <h2>Manual Control</h2>
+                    <div class="control-options">
+                        <div class="control-group">
+                            <label class="toggle-switch">
+                                <input type="checkbox" id="pumpToggle">
+                                <span class="slider"></span>
+                            </label>
+                            <span class="control-label">Pump Power</span>
+                        </div>
+                        <div class="control-group">
+                            <label for="pumpDuration">Duration (minutes)</label>
+                            <input type="number" id="pumpDuration" min="1" max="60" value="5">
+                        </div>
+                        <button class="btn btn-primary" id="startPump">
+                            <i class="fas fa-play"></i> Start Pump
+                        </button>
                     </div>
-                    <button class="btn btn-outline w-full" id="addSchedule">
-                        <i class="fas fa-plus mr-2"></i> Add Schedule
-                    </button>
                 </div>
-                <div class="schedule-list mt-4" id="scheduleList">
-                    <!-- Schedule items will be added here dynamically -->
+
+                <div class="control-card auto-mode">
+                    <h2>Automatic Mode</h2>
+                    <div class="control-options">
+                        <div class="control-group">
+                            <label class="toggle-switch">
+                                <input type="checkbox" id="autoModeToggle">
+                                <span class="slider"></span>
+                            </label>
+                            <span class="control-label">Enable Auto Mode</span>
+                        </div>
+                    </div>
                 </div>
             </div>
-        </div>
 
-        <div class="history-section">
-            <h2>Pump Activity History</h2>
-            <div class="history-card">
-                <div class="history-filters">
-                    <select id="historyFilter">
-                        <option value="today">Today</option>
-                        <option value="week">This Week</option>
-                        <option value="month">This Month</option>
-                    </select>
+            <div class="section-divider"></div>
+
+            <div class="card">
+                <div class="schedule-section">
+                    <h2>Irrigation Schedule</h2>
+                    <div class="schedule-card">
+                        <div class="schedule-header">
+                            <h3>Today's Schedule</h3>
+                            <div class="flex space-x-4 mb-4">
+                                <input type="time" id="scheduleTime" class="p-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500 flex-grow">
+                                <input type="number" id="scheduleDuration" min="1" placeholder="Duration (min)" class="p-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500 w-32">
+                            </div>
+                            <button class="btn btn-outline w-full" id="addSchedule">
+                                <i class="fas fa-plus mr-2"></i> Add Schedule
+                            </button>
+                        </div>
+                        <div class="schedule-list mt-4" id="scheduleList">
+                            <!-- Schedule items will be added here dynamically -->
+                        </div>
+                    </div>
                 </div>
-                <div class="history-list" id="historyList">
-                    <!-- History items will be added here dynamically -->
+
+                <div class="history-section">
+                    <h2>Pump Activity History</h2>
+                    <div class="history-card">
+                        <div class="history-filters">
+                            <select id="historyFilter">
+                                <option value="today">Today</option>
+                                <option value="week">This Week</option>
+                                <option value="month">This Month</option>
+                            </select>
+                        </div>
+                        <div class="history-list" id="historyList">
+                            <!-- History items will be added here dynamically -->
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -435,7 +441,7 @@
                         </button>
                     `;
                     scheduleList.appendChild(scheduleItem);
-        });
+                });
 
                 // Add event listeners for delete buttons
                 document.querySelectorAll('[data-schedule-key]').forEach(button => {
@@ -481,7 +487,7 @@
                 scheduleDurationInput.value = '';
             } catch (error) {
                 alert(`Failed to add schedule: ${error.message}`);
-                }
+            }
         });
 
         // Firebase reference for irrigation schedules

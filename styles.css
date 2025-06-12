@@ -46,7 +46,7 @@ body {
     line-height: 1.6;
 }
 
-/* Navigation Bar Animations */
+/* Enhanced Navigation Bar for Many Features */
 .navbar {
     animation: slideIn 0.5s ease-out;
     background-color: var(--card-background);
@@ -56,6 +56,7 @@ body {
     top: 0;
     width: 100%;
     z-index: 1000;
+    border-radius: 0 0 18px 18px;
 }
 
 .nav-container {
@@ -76,30 +77,47 @@ body {
 .nav-links {
     display: flex;
     gap: 0.5rem;
+    overflow-x: auto;
+    white-space: nowrap;
+    scrollbar-width: thin;
+    scrollbar-color: var(--primary-color) #e0e0e0;
+    padding-bottom: 2px;
+    border-radius: 8px;
+    background: rgba(245,246,250,0.7);
+    box-shadow: 0 2px 8px rgba(44,62,80,0.04);
+}
+
+.nav-links::-webkit-scrollbar {
+    height: 6px;
+}
+
+.nav-links::-webkit-scrollbar-thumb {
+    background: var(--primary-color);
+    border-radius: 4px;
+}
+
+.nav-links::-webkit-scrollbar-track {
+    background: #e0e0e0;
+    border-radius: 4px;
 }
 
 .nav-links a {
     color: var(--text-color);
     text-decoration: none;
     font-weight: 500;
-    font-size: 0.9rem;
+    font-size: 1rem;
     position: relative;
-    transition: color 0.3s ease;
+    transition: color 0.3s, background 0.3s, box-shadow 0.3s;
+    padding: 0.5rem 1.2rem;
+    border-radius: 6px;
+    margin: 0 2px;
+    display: inline-block;
 }
 
-.nav-links a::after {
-    content: '';
-    position: absolute;
-    bottom: -5px;
-    left: 0;
-    width: 0;
-    height: 2px;
+.nav-links a.active, .nav-links a:focus, .nav-links a:hover {
+    color: white;
     background: var(--primary-color);
-    transition: width 0.3s ease;
-}
-
-.nav-links a:hover::after {
-    width: 100%;
+    box-shadow: 0 2px 8px rgba(46,204,113,0.08);
 }
 
 .auth-controls {
@@ -120,10 +138,10 @@ body {
 .card {
     animation: slideIn 0.5s ease-out;
     background-color: var(--card-background);
-    border-radius: 10px;
-    padding: 1.5rem;
-    margin-bottom: 1.5rem;
-    box-shadow: var(--shadow);
+    border-radius: 18px !important;
+    padding: 2rem !important;
+    margin-bottom: 2rem !important;
+    box-shadow: 0 6px 24px rgba(44,62,80,0.08) !important;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
@@ -162,16 +180,17 @@ body {
 /* Buttons */
 .btn {
     display: inline-block;
-    padding: 0.8rem 1.5rem;
+    padding: 0.9rem 2rem !important;
     border: none;
-    border-radius: 5px;
-    font-size: 1rem;
-    font-weight: 500;
+    border-radius: 8px !important;
+    font-size: 1.08rem !important;
+    font-weight: 600 !important;
     cursor: pointer;
     position: relative;
     overflow: hidden;
     transition: all 0.3s ease;
     text-decoration: none;
+    box-shadow: 0 2px 8px rgba(44,62,80,0.04);
 }
 
 .btn::before {
@@ -229,8 +248,8 @@ body {
 .control-card {
     background: white;
     padding: 1.5rem;
-    border-radius: 10px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    border-radius: 18px !important;
+    box-shadow: 0 6px 24px rgba(44,62,80,0.08) !important;
     position: relative;
     transform: none !important;
 }
@@ -243,8 +262,8 @@ body {
 .status-card {
     background: white;
     padding: 1.5rem;
-    border-radius: 10px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    border-radius: 18px !important;
+    box-shadow: 0 6px 24px rgba(44,62,80,0.08) !important;
     display: flex;
     align-items: center;
     gap: 1rem;
@@ -514,7 +533,8 @@ input:checked + .slider:before {
     text-align: center;
     padding: 2rem;
     background: #f8f9fa;
-    border-radius: 10px;
+    border-radius: 18px !important;
+    box-shadow: 0 6px 24px rgba(44,62,80,0.08) !important;
     transition: transform 0.3s ease;
 }
 
@@ -564,7 +584,8 @@ input:checked + .slider:before {
     text-align: center;
     padding: 2rem;
     background: white;
-    border-radius: 10px;
+    border-radius: 18px !important;
+    box-shadow: 0 6px 24px rgba(44,62,80,0.08) !important;
     transition: transform 0.3s ease;
 }
 
@@ -702,8 +723,8 @@ input:checked + .slider:before {
     animation: slideIn 0.5s ease-out;
     background: white;
     padding: 1.5rem;
-    border-radius: 10px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    border-radius: 18px !important;
+    box-shadow: 0 6px 24px rgba(44,62,80,0.08) !important;
     display: flex;
     align-items: center;
     gap: 1rem;
@@ -738,8 +759,8 @@ input:checked + .slider:before {
     animation: slideIn 0.5s ease-out;
     background: white;
     padding: 1.5rem;
-    border-radius: 10px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    border-radius: 18px !important;
+    box-shadow: 0 6px 24px rgba(44,62,80,0.08) !important;
     transition: all 0.3s ease;
     position: relative;
     overflow: hidden;
@@ -811,8 +832,8 @@ input[type="number"]:focus {
     animation: slideIn 0.5s ease-out;
     background: white;
     padding: 1.5rem;
-    border-radius: 10px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    border-radius: 18px !important;
+    box-shadow: 0 6px 24px rgba(44,62,80,0.08) !important;
 }
 
 .schedule-header {
@@ -927,8 +948,8 @@ input[type="number"]:focus {
 .control-card {
     background: white;
     padding: 1.5rem;
-    border-radius: 10px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    border-radius: 18px !important;
+    box-shadow: 0 6px 24px rgba(44,62,80,0.08) !important;
     position: relative;
 }
 
@@ -1144,8 +1165,8 @@ select:disabled {
 .feature-card {
     background: white;
     padding: 2rem;
-    border-radius: 15px;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    border-radius: 18px !important;
+    box-shadow: 0 6px 24px rgba(44,62,80,0.08) !important;
     transition: all 0.3s ease;
     position: relative;
     overflow: hidden;
@@ -1187,8 +1208,8 @@ select:disabled {
 .benefit-card {
     background: white;
     padding: 2rem;
-    border-radius: 15px;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    border-radius: 18px !important;
+    box-shadow: 0 6px 24px rgba(44,62,80,0.08) !important;
     transition: all 0.3s ease;
     position: relative;
     overflow: hidden;
@@ -1230,8 +1251,8 @@ select:disabled {
 .step {
     background: white;
     padding: 2rem;
-    border-radius: 15px;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    border-radius: 18px !important;
+    box-shadow: 0 6px 24px rgba(44,62,80,0.08) !important;
     transition: all 0.3s ease;
     position: relative;
     overflow: hidden;
@@ -1388,9 +1409,9 @@ select:disabled {
 /* Enhanced Sensor Cards */
 .sensor-card {
     background: white;
-    border-radius: 15px;
-    padding: 1.5rem;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    border-radius: 18px !important;
+    padding: 2rem !important;
+    box-shadow: 0 6px 24px rgba(44,62,80,0.08) !important;
     transition: all 0.3s ease;
     position: relative;
     overflow: hidden;
@@ -1448,9 +1469,9 @@ select:disabled {
 /* Enhanced Control Panel */
 .control-panel {
     background: white;
-    border-radius: 15px;
-    padding: 2rem;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    border-radius: 18px !important;
+    padding: 2rem !important;
+    box-shadow: 0 6px 24px rgba(44,62,80,0.08) !important;
     margin-bottom: 2rem;
     border: 1px solid rgba(0,0,0,0.1);
     animation: slideIn 0.5s ease-out;
@@ -1604,4 +1625,14 @@ input:checked + .slider:before {
 .loading {
     animation: pulse 1.5s infinite;
     opacity: 0.7;
+}
+
+/* Section Dividers and Gradients */
+.section-divider {
+    width: 100%;
+    height: 2px;
+    background: linear-gradient(90deg, var(--primary-color), #e0e0e0, var(--primary-color));
+    border-radius: 2px;
+    margin: 2.5rem 0;
+    opacity: 0.2;
 }
