@@ -224,7 +224,10 @@
                     const data = snapshot.val();
                     document.getElementById('temperature').value = data.temp !== undefined ? data.temp : '';
                     document.getElementById('rainfall').value = data.rain !== undefined ? data.rain : '';
-                    alert('Temperature and Rainfall data fetched from Firebase.');
+                    document.getElementById('nitrogen').value = data.N !== undefined ? data.N : '';
+                    document.getElementById('phosphorus').value = data.P !== undefined ? data.P : '';
+                    document.getElementById('potassium').value = data.K !== undefined ? data.K : '';
+                    alert('Sensor data (Temperature, Rainfall, N, P, K) fetched from Firebase. Please manually enter pH value.');
                 } else {
                     alert('No sensor data available in Firebase to fetch.');
                 }

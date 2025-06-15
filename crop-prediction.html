@@ -224,18 +224,17 @@
 
                 // Add event listeners to newly created buttons
                 document.querySelectorAll('.select-crop-btn').forEach(button => {
-                    button.addEventListener('click', async (event) => {
-                        const cropName = event.target.dataset.cropName;
-                        if (confirm(`Are you sure you want to select ${cropName} as the current crop?`)) {
-                            try {
-                                const controlPlantRef = ref(database, 'control/plant');
-                                await set(controlPlantRef, cropName);
-                                alert(`${cropName} has been successfully selected as the current crop in Firebase!`);
-                            } catch (error) {
-                                document.getElementById('errorMessage').classList.remove('hidden');
-                                document.getElementById('errorMessage').querySelector('span').textContent = 
-                                    `Failed to save crop to Firebase: ${error.message}`;
-                            }
+                    button.addEventListener('click', async () => {
+                        const cropName = button.getAttribute('data-crop-name');
+                        const capitalizedCropName = capitalizeFirstLetter(cropName);
+                        
+                        try {
+                            const controlPlantRef = ref(database, 'control/plant');
+                            await set(controlPlantRef, capitalizedCropName);
+                            alert(`Selected crop "${capitalizedCropName}" has been saved to Firebase.`);
+                        } catch (error) {
+                            console.error('Error saving crop to Firebase:', error);
+                            alert('Failed to save crop selection. Please try again.');
                         }
                     });
                 });
@@ -280,9 +279,10 @@
                     const data = snapshot.val();
                     document.getElementById('temperature').value = data.temp !== undefined ? data.temp : '';
                     document.getElementById('rainfall').value = data.rain !== undefined ? data.rain : '';
-                    // N, P, K, pH are not directly available from typical environmental sensors.
-                    // User will still need to input these manually.
-                    alert('Temperature and Rainfall data fetched from Firebase. Please manually enter Nitrogen, Phosphorus, Potassium, and pH values.');
+                    document.getElementById('nitrogen').value = data.N !== undefined ? data.N : '';
+                    document.getElementById('phosphorus').value = data.P !== undefined ? data.P : '';
+                    document.getElementById('potassium').value = data.K !== undefined ? data.K : '';
+                    alert('Sensor data (Temperature, Rainfall, N, P, K) fetched from Firebase. Please manually enter pH value.');
                 } else {
                     alert('No sensor data available in Firebase to fetch.');
                 }
@@ -316,6 +316,11 @@
                 console.error('Error:', error);
                 throw error;
             }
+        }
+
+        // Function to capitalize first letter
+        function capitalizeFirstLetter(string) {
+            return string.charAt(0).toUpperCase() + string.slice(1).toLowerCase();
         }
     </script>
 </body>

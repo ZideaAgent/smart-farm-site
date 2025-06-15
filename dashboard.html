@@ -80,6 +80,27 @@
                 <div class="sensor-label">Water Level</div>
                 <div class="sensor-value" id="waterLevel">--%</div>
             </div>
+            <div class="card">
+                <div class="card-icon">
+                    <i class="fas fa-flask" id="nitrogenIcon"></i>
+                </div>
+                <div class="sensor-label">Nitrogen</div>
+                <div class="sensor-value" id="nitrogen">--mg/kg</div>
+            </div>
+            <div class="card">
+                <div class="card-icon">
+                    <i class="fas fa-flask" id="phosphorusIcon"></i>
+                </div>
+                <div class="sensor-label">Phosphorus</div>
+                <div class="sensor-value" id="phosphorus">--mg/kg</div>
+            </div>
+            <div class="card">
+                <div class="card-icon">
+                    <i class="fas fa-flask" id="potassiumIcon"></i>
+                </div>
+                <div class="sensor-label">Potassium</div>
+                <div class="sensor-value" id="potassium">--mg/kg</div>
+            </div>
         </div>
 
         <div class="charts-section">
@@ -96,6 +117,18 @@
                 <div class="chart-card">
                     <h3>Soil Moisture History</h3>
                     <div id="soilChart"></div>
+                </div>
+                <div class="chart-card">
+                    <h3>Nitrogen History</h3>
+                    <div id="nitrogenChart"></div>
+                </div>
+                <div class="chart-card">
+                    <h3>Phosphorus History</h3>
+                    <div id="phosphorusChart"></div>
+                </div>
+                <div class="chart-card">
+                    <h3>Potassium History</h3>
+                    <div id="potassiumChart"></div>
                 </div>
             </div>
         </div>
@@ -148,52 +181,73 @@
 
         // Function to update icons based on values
         function updateIcons(data) {
-            // Temperature icon
             const tempIcon = document.getElementById('tempIcon');
+            const humidityIcon = document.getElementById('humidityIcon');
+            const soilIcon = document.getElementById('soilIcon');
+            const rainIcon = document.getElementById('rainIcon');
+            const waterIcon = document.getElementById('waterIcon');
+            const nitrogenIcon = document.getElementById('nitrogenIcon');
+            const phosphorusIcon = document.getElementById('phosphorusIcon');
+            const potassiumIcon = document.getElementById('potassiumIcon');
+
+            const tempCard = tempIcon.closest('.card');
+            const humidityCard = humidityIcon.closest('.card');
+            const soilCard = soilIcon.closest('.card');
+            const rainCard = rainIcon.closest('.card');
+            const waterCard = waterIcon.closest('.card');
+            const nitrogenCard = nitrogenIcon.closest('.card');
+            const phosphorusCard = phosphorusIcon.closest('.card');
+            const potassiumCard = potassiumIcon.closest('.card');
+
+            // Temperature icon color
             if (data.temp > 30) {
-                tempIcon.className = 'fas fa-temperature-high';
                 tempIcon.style.color = '#ff4444';
+                tempCard.style.backgroundColor = '#ffebee';
             } else if (data.temp < 15) {
-                tempIcon.className = 'fas fa-temperature-low';
                 tempIcon.style.color = '#4444ff';
+                tempCard.style.backgroundColor = '#e8eaf6';
             } else {
-                tempIcon.className = 'fas fa-temperature-half';
                 tempIcon.style.color = '#44ff44';
+                tempCard.style.backgroundColor = '#e8f5e9';
             }
 
-            // Humidity icon
-            const humidityIcon = document.getElementById('humidityIcon');
+            // Humidity icon color
             if (data.humidity > 70) {
                 humidityIcon.style.color = '#4444ff';
+                humidityCard.style.backgroundColor = '#e8eaf6';
             } else if (data.humidity < 30) {
                 humidityIcon.style.color = '#ff4444';
+                humidityCard.style.backgroundColor = '#ffebee';
             } else {
                 humidityIcon.style.color = '#44ff44';
+                humidityCard.style.backgroundColor = '#e8f5e9';
             }
 
-            // Soil moisture icon
-            const soilIcon = document.getElementById('soilIcon');
+            // Soil moisture icon color
             if (data.soil > 70) {
                 soilIcon.style.color = '#4444ff';
+                soilCard.style.backgroundColor = '#e8eaf6';
             } else if (data.soil < 30) {
                 soilIcon.style.color = '#ff4444';
+                soilCard.style.backgroundColor = '#ffebee';
             } else {
                 soilIcon.style.color = '#44ff44';
+                soilCard.style.backgroundColor = '#e8f5e9';
             }
 
-            // Rain icon
-            const rainIcon = document.getElementById('rainIcon');
-            if (data.rain > 0) {
-                rainIcon.className = 'fas fa-cloud-showers-heavy';
+            // Rain icon color
+            if (data.rain > 100) {
                 rainIcon.style.color = '#4444ff';
+                rainCard.style.backgroundColor = '#e8eaf6';
+            } else if (data.rain < 20) {
+                rainIcon.style.color = '#ff4444';
+                rainCard.style.backgroundColor = '#ffebee';
             } else {
-                rainIcon.className = 'fas fa-cloud-sun';
-                rainIcon.style.color = '#ffaa44';
+                rainIcon.style.color = '#44ff44';
+                rainCard.style.backgroundColor = '#e8f5e9';
             }
 
-            // Water level icon and card color
-            const waterIcon = document.getElementById('waterIcon');
-            const waterCard = document.getElementById('waterLevelCard');
+            // Water level icon color
             if (data.water > 70) {
                 waterIcon.style.color = '#44ff44';
                 waterCard.style.backgroundColor = '#e8f5e9';
@@ -204,12 +258,51 @@
                 waterIcon.style.color = '#ffaa44';
                 waterCard.style.backgroundColor = '#fff3e0';
             }
+
+            // Nitrogen icon color
+            if (data.N > 140) {
+                nitrogenIcon.style.color = '#ff4444';
+                nitrogenCard.style.backgroundColor = '#ffebee';
+            } else if (data.N < 40) {
+                nitrogenIcon.style.color = '#ffaa44';
+                nitrogenCard.style.backgroundColor = '#fff3e0';
+            } else {
+                nitrogenIcon.style.color = '#44ff44';
+                nitrogenCard.style.backgroundColor = '#e8f5e9';
+            }
+
+            // Phosphorus icon color
+            if (data.P > 50) {
+                phosphorusIcon.style.color = '#ff4444';
+                phosphorusCard.style.backgroundColor = '#ffebee';
+            } else if (data.P < 10) {
+                phosphorusIcon.style.color = '#ffaa44';
+                phosphorusCard.style.backgroundColor = '#fff3e0';
+            } else {
+                phosphorusIcon.style.color = '#44ff44';
+                phosphorusCard.style.backgroundColor = '#e8f5e9';
+            }
+
+            // Potassium icon color
+            if (data.K > 200) {
+                potassiumIcon.style.color = '#ff4444';
+                potassiumCard.style.backgroundColor = '#ffebee';
+            } else if (data.K < 40) {
+                potassiumIcon.style.color = '#ffaa44';
+                potassiumCard.style.backgroundColor = '#fff3e0';
+            } else {
+                potassiumIcon.style.color = '#44ff44';
+                potassiumCard.style.backgroundColor = '#e8f5e9';
+            }
         }
 
         // Initialize charts with empty data
         let temperatureChart = null;
         let humidityChart = null;
         let soilChart = null;
+        let nitrogenChart = null;
+        let phosphorusChart = null;
+        let potassiumChart = null;
 
         // Customize chart layouts
         const commonLayout = {
@@ -286,6 +379,54 @@
                         });
                     }
                 }
+
+                // Update nitrogen chart
+                if (chartData.nitrogen_chart) {
+                    const nitrogenData = JSON.parse(chartData.nitrogen_chart);
+                    if (!nitrogenChart) {
+                        nitrogenChart = Plotly.newPlot('nitrogenChart', nitrogenData.data, {
+                            ...nitrogenData.layout,
+                            ...commonLayout
+                        });
+                    } else {
+                        Plotly.react('nitrogenChart', nitrogenData.data, {
+                            ...nitrogenData.layout,
+                            ...commonLayout
+                        });
+                    }
+                }
+
+                // Update phosphorus chart
+                if (chartData.phosphorus_chart) {
+                    const phosphorusData = JSON.parse(chartData.phosphorus_chart);
+                    if (!phosphorusChart) {
+                        phosphorusChart = Plotly.newPlot('phosphorusChart', phosphorusData.data, {
+                            ...phosphorusData.layout,
+                            ...commonLayout
+                        });
+                    } else {
+                        Plotly.react('phosphorusChart', phosphorusData.data, {
+                            ...phosphorusData.layout,
+                            ...commonLayout
+                        });
+                    }
+                }
+
+                // Update potassium chart
+                if (chartData.potassium_chart) {
+                    const potassiumData = JSON.parse(chartData.potassium_chart);
+                    if (!potassiumChart) {
+                        potassiumChart = Plotly.newPlot('potassiumChart', potassiumData.data, {
+                            ...potassiumData.layout,
+                            ...commonLayout
+                        });
+                    } else {
+                        Plotly.react('potassiumChart', potassiumData.data, {
+                            ...potassiumData.layout,
+                            ...commonLayout
+                        });
+                    }
+                }
             }
         }
 
@@ -302,6 +443,9 @@
                 updateSensorValue('soilMoisture', data.soil || '--', '%');
                 updateSensorValue('rainLevel', data.rain !== undefined ? data.rain : '--', 'mm');
                 updateSensorValue('waterLevel', data.water || '--', '%');
+                updateSensorValue('nitrogen', data.nitrogen || '--', 'mg/kg');
+                updateSensorValue('phosphorus', data.phosphorus || '--', 'mg/kg');
+                updateSensorValue('potassium', data.potassium || '--', 'mg/kg');
                 updateIcons(data);
             }
         }, (error) => {
