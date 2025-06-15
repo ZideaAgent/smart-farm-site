@@ -443,9 +443,9 @@
                 updateSensorValue('soilMoisture', data.soil || '--', '%');
                 updateSensorValue('rainLevel', data.rain !== undefined ? data.rain : '--', 'mm');
                 updateSensorValue('waterLevel', data.water || '--', '%');
-                updateSensorValue('nitrogen', data.nitrogen || '--', 'mg/kg');
-                updateSensorValue('phosphorus', data.phosphorus || '--', 'mg/kg');
-                updateSensorValue('potassium', data.potassium || '--', 'mg/kg');
+                updateSensorValue('nitrogen', data.N !== undefined ? data.N : '--', 'mg/kg');
+                updateSensorValue('phosphorus', data.P !== undefined ? data.P : '--', 'mg/kg');
+                updateSensorValue('potassium', data.K !== undefined ? data.K : '--', 'mg/kg');
                 updateIcons(data);
             }
         }, (error) => {
