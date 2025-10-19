@@ -1,0 +1,251 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Privacy Policy & Terms of Service — {{COMPANY_NAME}}</title>
+  <meta name="description" content="Privacy Policy and Terms of Service for {{COMPANY_NAME}}." />
+  <style>
+    :root{
+      --bg:#f7f8fb; --card:#fff; --muted:#6b7280; --accent:#0ea5a4;
+      --max-w:980px; --radius:12px; --gap:20px; font-family:Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+    }
+    *{box-sizing:border-box}
+    body{margin:0;background:linear-gradient(180deg,#eef2f7,white);color:#0f172a;line-height:1.6}
+    header{background:var(--accent);color:white;padding:28px 18px 36px}
+    .container{max-width:var(--max-w);margin: -28px auto 48px;padding:0 18px}
+    .card{background:var(--card);padding:28px;border-radius:var(--radius);box-shadow:0 8px 30px rgba(15,23,42,0.06)}
+    .grid{display:grid;grid-template-columns:260px 1fr;gap:var(--gap)}
+    nav{position:sticky;top:24px;align-self:start}
+    nav ul{list-style:none;padding:12px;margin:0;border-radius:10px;background:#fbfdfe}
+    nav a{display:block;padding:10px 12px;color:var(--accent);text-decoration:none;border-radius:8px;margin:6px 0}
+    nav a:hover{background:#ecfeff}
+    main{padding-left:10px}
+    h1{margin:0 0 6px;font-size:20px}
+    p.lead{margin:0;color:white;opacity:0.95}
+    h2{margin-top:8px;color:#0f172a}
+    h3{margin-bottom:6px;color:#0f172a;font-size:16px}
+    .meta{font-size:13px;color:var(--muted);margin-bottom:18px}
+    code{background:#f3f4f6;padding:2px 6px;border-radius:6px}
+    .toc-note{font-size:13px;color:var(--muted)}
+    footer{max-width:var(--max-w);margin:28px auto;padding:0 18px 48px;color:var(--muted);font-size:13px}
+    @media (max-width:900px){.grid{grid-template-columns:1fr;}.container{margin-top:0} nav{position:static}}
+    .btn-inline{display:inline-block;background:var(--accent);color:white;padding:8px 12px;border-radius:8px;text-decoration:none;font-weight:600}
+    .small{font-size:14px;color:var(--muted)}
+    .kicker{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:1px}
+    .section{padding:14px 0;border-top:1px solid #f1f5f9}
+    .list{margin-left:20px}
+    .mono{font-family:ui-monospace,monospace;background:#f8fafc;padding:4px 6px;border-radius:6px}
+  </style>
+</head>
+<body>
+  <header>
+    <div style="max-width:var(--max-w);margin:0 auto;padding:0 18px;display:flex;align-items:center;gap:16px;">
+      <div>
+        <h1 style="font-size:18px;margin:0">{{COMPANY_NAME}}</h1>
+        <p class="lead">Privacy Policy & Terms of Service</p>
+      </div>
+      <div style="margin-left:auto;text-align:right">
+        <div class="small">Effective date: <strong>{{EFFECTIVE_DATE}}</strong></div>
+        <a class="btn-inline" href="#contact">Contact</a>
+      </div>
+    </div>
+  </header>
+
+  <div class="container">
+    <div class="card grid" role="main">
+      <nav aria-label="Table of contents">
+        <ul>
+          <li><a href="#privacy">Privacy Policy</a></li>
+          <li><a href="#data-we-collect">Data We Collect</a></li>
+          <li><a href="#how-we-use">How We Use Data</a></li>
+          <li><a href="#cookies">Cookies & Tracking</a></li>
+          <li><a href="#third-parties">Third Parties</a></li>
+          <li><a href="#rights">Your Rights</a></li>
+          <li><a href="#security">Security</a></li>
+          <li><a href="#terms">Terms of Service</a></li>
+          <li><a href="#user-responsibilities">User Responsibilities</a></li>
+          <li><a href="#termination">Termination</a></li>
+          <li><a href="#disclaimer">Disclaimer & Liability</a></li>
+          <li><a href="#governing-law">Governing Law</a></li>
+          <li><a href="#contact">Contact</a></li>
+        </ul>
+        <div style="padding:12px 14px;font-size:13px;color:var(--muted)" class="toc-note">
+          Customize <code class="mono">{{COMPANY_NAME}}</code>, <code class="mono">{{CONTACT_EMAIL}}</code> &amp; <code class="mono">{{EFFECTIVE_DATE}}</code>.
+        </div>
+      </nav>
+
+      <main>
+        <!-- PRIVACY -->
+        <section id="privacy">
+          <h2>Privacy Policy</h2>
+          <div class="meta">This Privacy Policy explains how <strong>{{COMPANY_NAME}}</strong> collects, uses, shares, and protects personal information when you use our services.</div>
+
+          <div class="section" id="data-we-collect">
+            <h3>Data We Collect</h3>
+            <p>We may collect the following categories of information:</p>
+            <ul class="list">
+              <li><strong>Contact data:</strong> name, email, phone number you provide.</li>
+              <li><strong>Usage data:</strong> pages visited, session duration, device and browser information, IP address, logs.</li>
+              <li><strong>Content you provide:</strong> messages, uploads, images or other files.</li>
+              <li><strong>Payment data:</strong> (if applicable) processed by third-party providers; we do not store full card details.</li>
+              <li><strong>Cookies & tracking identifiers.</strong></li>
+            </ul>
+          </div>
+
+          <div class="section" id="how-we-use">
+            <h3>How We Use Your Information</h3>
+            <ul class="list">
+              <li>To provide and operate our services and features.</li>
+              <li>To communicate with you, send updates and transactional messages.</li>
+              <li>To improve user experience and personalize content.</li>
+              <li>To detect, prevent and address technical issues and abuse.</li>
+              <li>To comply with legal obligations and enforce our policies.</li>
+            </ul>
+          </div>
+
+          <div class="section" id="cookies">
+            <h3>Cookies & Tracking</h3>
+            <p>We (and our partners) use cookies and similar technologies for analytics, performance, and advertising purposes. You can manage cookie preferences via your browser settings. Typical cookie categories we use:</p>
+            <ul class="list">
+              <li><strong>Necessary:</strong> required for core site functionality.</li>
+              <li><strong>Preferences:</strong> remember settings like language.</li>
+              <li><strong>Analytics:</strong> measure and analyze usage.</li>
+              <li><strong>Advertising:</strong> third-party ad personalization.</li>
+            </ul>
+          </div>
+
+          <div class="section" id="third-parties">
+            <h3>Third-Party Services</h3>
+            <p>We may share data with service providers who perform services on our behalf, such as hosting, payment processors, analytics providers, and marketing platforms. We require partners to handle data in accordance with applicable laws.</p>
+            <p>Links to third-party sites are for convenience; this Policy does not apply to those sites. Review their privacy policies separately.</p>
+          </div>
+
+          <div class="section" id="rights">
+            <h3>Your Rights</h3>
+            <p>Depending on your location, you may have rights such as:</p>
+            <ul class="list">
+              <li>Access the personal data we hold about you.</li>
+              <li>Correct inaccurate or incomplete data.</li>
+              <li>Request deletion or restriction of processing.</li>
+              <li>Object to processing or withdraw consent where processing is consent-based.</li>
+              <li>Receive a copy of your data in a portable format.</li>
+            </ul>
+            <p>To exercise rights, contact us at <a href="mailto:{{CONTACT_EMAIL}}">{{CONTACT_EMAIL}}</a>. We may ask for identity verification before fulfilling requests.</p>
+          </div>
+
+          <div class="section" id="security">
+            <h3>Security & Data Retention</h3>
+            <p>We implement reasonable administrative, technical and physical safeguards to protect data. However no system is completely secure — if a breach occurs we will follow applicable notification obligations.</p>
+            <p>We retain personal data as long as necessary for the purposes described in this policy and to meet legal obligations.</p>
+          </div>
+
+          <div class="section" id="children">
+            <h3>Children's Privacy</h3>
+            <p>Our services are not intended for children under 13 (or higher age where required). We do not knowingly collect personal information from children; if discovered we will promptly delete it.</p>
+          </div>
+
+          <div class="section" id="international">
+            <h3>International Transfers</h3>
+            <p>Data may be processed in countries outside your own. We take steps to ensure adequate protections, such as contractual safeguards, where required.</p>
+          </div>
+
+        </section>
+
+        <!-- TERMS -->
+        <section id="terms" class="section">
+          <h2>Terms of Service</h2>
+          <div class="meta">These Terms govern your access to and use of the services provided by <strong>{{COMPANY_NAME}}</strong>.</div>
+
+          <div class="section" id="acceptance">
+            <h3>Acceptance & Eligibility</h3>
+            <p>By using our services you agree to these Terms. You must be at least the minimum legal age in your jurisdiction to form a binding contract.</p>
+          </div>
+
+          <div class="section" id="services">
+            <h3>Services & Accounts</h3>
+            <p>We provide services described on our site. You are responsible for the activity in your account, and for keeping credentials secure. You agree not to use the service for unlawful purposes.</p>
+          </div>
+
+          <div class="section" id="user-responsibilities">
+            <h3>User Responsibilities</h3>
+            <ul class="list">
+              <li>Provide accurate information and keep it updated.</li>
+              <li>Comply with applicable laws and these Terms.</li>
+              <li>Respect intellectual property rights of others.</li>
+            </ul>
+          </div>
+
+          <div class="section" id="fees">
+            <h3>Fees & Payment</h3>
+            <p>If you buy paid features, you agree to pay the fees. Payments are processed by third-party payment processors and are subject to their terms.</p>
+          </div>
+
+          <div class="section" id="intellectual-property">
+            <h3>Intellectual Property</h3>
+            <p>All rights, title and interest in our services, content, and software are owned by {{COMPANY_NAME}} or its licensors. You retain ownership of content you submit, but grant us a license to use it to provide the service.</p>
+          </div>
+
+          <div class="section" id="termination">
+            <h3>Termination</h3>
+            <p>We may suspend or terminate access for violations of these Terms or abusive behavior. You may also close your account at any time, subject to any outstanding obligations.</p>
+          </div>
+
+          <div class="section" id="disclaimer">
+            <h3>Disclaimer & Limitation of Liability</h3>
+            <p>To the maximum extent permitted by law, services are provided "as is" and we disclaim all warranties. {{COMPANY_NAME}} and its affiliates shall not be liable for indirect, incidental, or consequential damages. Our aggregate liability is limited to amounts you paid in the prior 12 months (or a nominal amount where law requires).</p>
+          </div>
+
+          <div class="section" id="indemnity">
+            <h3>Indemnity</h3>
+            <p>You agree to indemnify and hold harmless {{COMPANY_NAME}} against claims arising from your violation of these Terms or misuse of the service.</p>
+          </div>
+
+          <div class="section" id="governing-law">
+            <h3>Governing Law & Disputes</h3>
+            <p>These Terms are governed by the laws of the jurisdiction where {{COMPANY_NAME}} is established (customize as needed). Disputes will be resolved in the competent courts or via arbitration as specified here.</p>
+          </div>
+
+          <div class="section" id="changes">
+            <h3>Changes to Terms & Policy</h3>
+            <p>We may update these Terms or the Privacy Policy. We will post changes with a new effective date. Continued use after changes constitutes acceptance.</p>
+          </div>
+
+        </section>
+
+        <section id="contact" class="section">
+          <h3>Contact</h3>
+          <p>If you have questions or requests regarding privacy or these Terms, contact us at <a href="mailto:{{CONTACT_EMAIL}}">{{CONTACT_EMAIL}}</a>.</p>
+        </section>
+
+        <section class="section" aria-hidden="true">
+          <p class="small">Last updated: {{EFFECTIVE_DATE}}. Replace placeholders <code class="mono">{{COMPANY_NAME}}</code>, <code class="mono">{{CONTACT_EMAIL}}</code>, and <code class="mono">{{EFFECTIVE_DATE}}</code> with your details. This text is a template and not legal advice.</p>
+        </section>
+
+      </main>
+    </div>
+  </div>
+
+  <footer>
+    <div style="max-width:var(--max-w);margin:0 auto;padding:0 18px;text-align:center">
+      © <span id="year"></span> {{COMPANY_NAME}} — <a href="#privacy">Privacy</a> · <a href="#terms">Terms</a>
+    </div>
+  </footer>
+
+  <script>
+    // Small helpers: set year and replace placeholders client-side (optional)
+    (function(){
+      document.getElementById('year').textContent = new Date().getFullYear();
+
+      // If you want to programmatically set company info, uncomment and fill:
+      // const COMPANY_NAME = "My Company Ltd.";
+      // const CONTACT_EMAIL = "hello@company.com";
+      // const EFFECTIVE_DATE = "October 19, 2025";
+      // document.body.innerHTML = document.body.innerHTML
+      //   .replace(/{{COMPANY_NAME}}/g, COMPANY_NAME)
+      //   .replace(/{{CONTACT_EMAIL}}/g, CONTACT_EMAIL)
+      //   .replace(/{{EFFECTIVE_DATE}}/g, EFFECTIVE_DATE);
+    })();
+  </script>
+</body>
+</html>
